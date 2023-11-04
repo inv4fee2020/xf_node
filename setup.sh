@@ -73,13 +73,15 @@ FUNC_PKG_CHECK(){
 
 FUNC_DKR_INSTALL(){
 
+    echo "Installing Docker"
+
+    #sudo apt-get update
 
     sudo apt-get install \
-            apt-transport-https ca-certificates curl git jq \
+            apt-transport-https \
+            ca-certificates \
+            curl \
             software-properties-common -y
-
-
-    echo "Installing Docker"
 
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
@@ -91,14 +93,13 @@ FUNC_DKR_INSTALL(){
     sudo apt-get update
 
     sudo apt-get install docker-ce -y
-
-    echo "Installing Docker-Compose"
-
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        
 
     sudo chmod +x /usr/local/bin/docker-compose
     sleep 5
-    echo "Docker Compose Installed successfully"
+    echo "Docker Installed successfully"
 }
 
 
@@ -109,16 +110,18 @@ FUNC_CLONE_NODE_SETUP(){
     git clone https://github.com/XinFinOrg/XinFin-Node
     cd XinFin-Node/$VARVAL_CHAIN_NAME
 
-    echo "Generating Private Key and Wallet Address into keys.json"
-    docker build -t address-creator ../address-creator/ && docker run -e NUMBER_OF_KEYS=1 -e FILE=true -v "$(pwd):/work/output" -it address-creator
+    ## update the .env file with the $VARVAL_NODE_NAME
+    ## NODE_NAME=XF_MasterNode
+    sed  -i.bak 's|^NODE_NAME.*|NODE_NAME='$VARVAL_NODE_NAME'|g' .env
 
-    PRIVATE_KEY=$(jq -r '.key0.PrivateKey' keys.json)
-    sed -i "s/PRIVATE_KEY=xxxx/PRIVATE_KEY=${PRIVATE_KEY}/g" .env
-    sed -i "s/INSTANCE_NAME=XF_MasterNode/INSTANCE_NAME=${VARVAL_NODE_NAME}/g" .env
+    ## update the email address with random mail address
+    ## CONTACT_DETAILS=YOUR_EMAIL_ADDRESS
+    sed  -i 's|^CONTACT_DETAILS.*|CONTACT_DETAILS=noreply@rpc.local|g' .env
 
+
+    sudo docker-compose -f docker-compose.yml up -d
     echo ""
     echo "Starting Xinfin Node ..."
-    #sudo docker-compose -f docker-compose.yml up --build --force-recreate -d
     FUNC_EXIT
 }
 
