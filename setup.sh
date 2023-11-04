@@ -131,6 +131,7 @@ FUNC_CLONE_NODE_SETUP(){
     ## CONTACT_DETAILS=YOUR_EMAIL_ADDRESS
     sed  -i 's|^CONTACT_DETAILS.*|CONTACT_DETAILS=noreply@rpc.local|g' .env
 
+
     ## update the yml file with network config to allow nginx to pass traffic
 
     # Define the search text
@@ -140,16 +141,16 @@ FUNC_CLONE_NODE_SETUP(){
 
 replace_text="\
      networks:
-      mynetwork:
-        ipv4_address: 172.19.0.2
+       mynetwork:
+         ipv4_address: 172.19.0.2
     ports:
-      - "30303:30303"
+      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
 networks:
   mynetwork:
     ipam:
-      driver: bridge
+      driver: default
       config:
-        - subnet: "172.19.0.0/24""
+        - subnet: \"172.19.0.0/24\""
 
     # Specify the input YAML file
     input_file="docker-compose.yml"
