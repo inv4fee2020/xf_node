@@ -140,8 +140,8 @@ FUNC_CLONE_NODE_SETUP(){
 
 replace_text="\
      networks:
-      - mynetwork
-    ipv4_address: 172.19.0.2
+      mynetwork:
+        ipv4_address: 172.19.0.2
     ports:
       - "30303:30303"
 networks:
