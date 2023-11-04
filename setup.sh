@@ -140,9 +140,9 @@ FUNC_CLONE_NODE_SETUP(){
     # Define the replacement text with a variable for the port value
 
 replace_text="\
-     networks:
-       mynetwork:
-         ipv4_address: 172.19.0.2
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.2
     ports:
       - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
 networks:
