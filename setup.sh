@@ -118,6 +118,56 @@ FUNC_CLONE_NODE_SETUP(){
     ## CONTACT_DETAILS=YOUR_EMAIL_ADDRESS
     sed  -i 's|^CONTACT_DETAILS.*|CONTACT_DETAILS=noreply@rpc.local|g' .env
 
+    ## update the yml file with network config to allow nginx to pass traffic
+
+    # Define the search text
+    search_text="network_mode: 'host'"
+
+    # Define the replacement text with a variable for the port value
+
+replace_text="\
+        networks:
+          mynetwork:
+            ipv4_address: 172.19.0.2
+        ports:
+          - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
+
+        networks:
+          mynetwork:
+            ipam:
+              driver: default
+              config:
+                - subnet: 172.19.0.0/24"
+
+    # Specify the input YAML file
+    input_file="docker-compose.yml"
+
+    # Create a backup of the original YAML file with a timestamp
+    backup_file="docker-compose-$(date +'%Y%m%d%H%M%S').yml"
+
+    # Copy the original file to the backup file
+    cp "$input_file" "$backup_file"
+
+    # Use awk to perform the replacement and maintain YAML formatting
+    awk -v search="$search_text" -v replace="$replace_text" '{
+      if ($0 == search) {
+        printf("%s\n", replace)
+        found = 1
+      } else {
+        print
+      }
+    }END{
+      if (!found) {
+        print "Error: Search text not found in the input file." > "/dev/stderr"
+        exit 1
+      }
+    }' "$input_file" > "$input_file.tmp"
+
+    # Replace the original file with the temporary file
+    mv "$input_file.tmp" "$input_file"
+
+    echo "Replacement complete, and a backup has been created as $backup_file."
+
 
     sudo docker-compose -f docker-compose.yml up -d
     echo ""
