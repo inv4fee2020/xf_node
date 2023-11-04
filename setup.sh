@@ -139,15 +139,15 @@ FUNC_CLONE_NODE_SETUP(){
     # Define the replacement text with a variable for the port value
 
 replace_text="\
-    networks:
+     networks:
       - mynetwork
-    ipv4_address: 172.19.0.2
+        ipv4_address: 172.19.0.2
     ports:
-      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
+      - "30303:30303"
 networks:
   mynetwork:
     ipam:
-      driver: default
+      driver: bridge
       config:
         - subnet: 172.19.0.0/24"
 
@@ -201,6 +201,7 @@ FUNC_SETUP_UFW_PORTS(){
     CPORT=$(sudo ss -tlpn | grep sshd | awk '{print$4}' | cut -d ':' -f 2 -s)
     #echo $CPORT
     sudo ufw allow $CPORT/tcp
+    sudo ufw allow $VARVAL_DKR_PORT/tcp
     sudo ufw status verbose
     sleep 2s
 }
