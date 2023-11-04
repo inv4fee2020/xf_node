@@ -124,6 +124,22 @@ FUNC_CLONE_NODE_SETUP(){
 
 
 
+FUNC_SETUP_UFW_PORTS(){
+    echo 
+    echo 
+    echo -e "${GREEN}#########################################################################${NC}" 
+    echo 
+    echo -e "${GREEN}## Base Setup: Configure Firewall...${NC}"
+    echo 
+
+    # Get current SSH port number 
+    CPORT=$(sudo ss -tlpn | grep sshd | awk '{print$4}' | cut -d ':' -f 2 -s)
+    #echo $CPORT
+    sudo ufw allow $CPORT/tcp
+    sudo ufw status verbose
+    sleep 2s
+}
+
 
 FUNC_ENABLE_UFW(){
 
@@ -188,8 +204,15 @@ FUNC_NODE_DEPLOY(){
 
     # installs default packages listed in vars file
     FUNC_PKG_CHECK;
+
+    # Firewall config
+    FUNC_SETUP_UFW_PORTS
     FUNC_ENABLE_UFW;
+
+    #Docker install
     FUNC_DKR_INSTALL;
+
+    #XinFin Node setup
     FUNC_CLONE_NODE_SETUP;
 
 
