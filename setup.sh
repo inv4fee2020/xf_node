@@ -121,7 +121,7 @@ FUNC_CLONE_NODE_SETUP(){
     else
       echo "The directory '$directory' exists."
     fi
-    cd XinFin-Node/$VARVAL_CHAIN_NAME
+    cd $directory/$VARVAL_CHAIN_NAME
 
     ## update the .env file with the $VARVAL_NODE_NAME
     ## NODE_NAME=XF_MasterNode
@@ -134,7 +134,7 @@ FUNC_CLONE_NODE_SETUP(){
     ## update the yml file with network config to allow nginx to pass traffic
 
     # Define the search text
-    search_text="network_mode: 'host'"
+    search_text="    network_mode: "host""
 
     # Define the replacement text with a variable for the port value
 
