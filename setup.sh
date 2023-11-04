@@ -134,23 +134,22 @@ FUNC_CLONE_NODE_SETUP(){
     ## update the yml file with network config to allow nginx to pass traffic
 
     # Define the search text
-    search_text="    network_mode: "host""
+    search_text='    network_mode: "host"'
 
     # Define the replacement text with a variable for the port value
 
 replace_text="\
-        networks:
-          mynetwork:
-            ipv4_address: 172.19.0.2
-        ports:
-          - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
-
-        networks:
-          mynetwork:
-            ipam:
-              driver: default
-              config:
-                - subnet: 172.19.0.0/24"
+    networks:
+      - mynetwork
+    ipv4_address: 172.19.0.2
+    ports:
+      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
+networks:
+  mynetwork:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.19.0.0/24"
 
     # Specify the input YAML file
     input_file="docker-compose.yml"
