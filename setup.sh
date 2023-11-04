@@ -73,33 +73,39 @@ FUNC_PKG_CHECK(){
 
 FUNC_DKR_INSTALL(){
 
-    echo "Installing Docker"
+    if ! command -v docker &> /dev/null; then
+        echo "Docker is not installed. installing..."
 
-    #sudo apt-get update
+        echo "Installing Docker"
 
-    sudo apt-get install \
-            apt-transport-https \
-            ca-certificates \
-            curl \
-            software-properties-common -y
+        #sudo apt-get update
 
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo apt-get install \
+                apt-transport-https \
+                ca-certificates \
+                curl \
+                software-properties-common -y
 
-    sudo add-apt-repository \
-         "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-         $(lsb_release -cs) \
-         stable"
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-    sudo apt-get update
+        sudo add-apt-repository \
+             "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+             $(lsb_release -cs) \
+             stable"
 
-    sudo apt-get install docker-ce -y
-    
-    sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        
+        sudo apt-get update
 
-    sudo chmod +x /usr/local/bin/docker-compose
-    sleep 5
-    echo "Docker Installed successfully"
+        sudo apt-get install docker-ce -y
+
+        sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+
+        sudo chmod +x /usr/local/bin/docker-compose
+        sleep 5
+        echo "Docker Installed successfully"
+    else
+        echo "Docker is already installed. skipping.."
+    fi
 }
 
 
@@ -107,7 +113,14 @@ FUNC_CLONE_NODE_SETUP(){
 
     echo "Clone Xinfin Node to HOME directory "
     cd ~/
-    git clone https://github.com/XinFinOrg/XinFin-Node
+    directory="XinFin-Node"
+
+    if [ ! -d "$directory" ]; then
+      echo "The directory '$directory' does not exist."
+        git clone https://github.com/XinFinOrg/XinFin-Node
+    else
+      echo "The directory '$directory' exists."
+    fi
     cd XinFin-Node/$VARVAL_CHAIN_NAME
 
     ## update the .env file with the $VARVAL_NODE_NAME
