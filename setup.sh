@@ -138,7 +138,7 @@ FUNC_CLONE_NODE_SETUP(){
 
     # Define the replacement text with a variable for the port value
 
-replace_text='\
+replace_text="\
      networks:
       mynetwork:
         ipv4_address: 172.19.0.2
@@ -149,7 +149,7 @@ networks:
     ipam:
       driver: bridge
       config:
-        - subnet: "172.19.0.0/24"'
+        - subnet: "172.19.0.0/24""
 
     # Specify the input YAML file
     input_file="docker-compose.yml"
