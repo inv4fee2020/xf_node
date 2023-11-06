@@ -324,7 +324,7 @@ FUNC_NODE_DEPLOY(){
     sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
-    sudo certbot --nginx -d "$USER_DOMAINS"
+    sudo certbot --nginx -d "$USER_DOMAINS" -m "inv4fee2020@gmail.com"
 
     # Get the source IP of the current SSH session
     source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
