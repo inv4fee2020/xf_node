@@ -285,14 +285,14 @@ FUNC_NODE_DEPLOY(){
 
 
     # Update the package list and upgrade the system
-    apt update
-    apt upgrade -y
+    #apt update
+    #apt upgrade -y
 
     # Install Nginx
     sudo apt install nginx -y
 
     # Check if UFW (Uncomplicated Firewall) is installed
-    sudo if dpkg -l | grep -q "ufw"; then
+    if dpkg -l | grep -q "ufw"; then
         # If UFW is installed, allow Nginx through the firewall
         sudo ufw allow 'Nginx Full'
     else
