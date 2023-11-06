@@ -321,7 +321,7 @@ FUNC_NODE_DEPLOY(){
 
     # Create a test index.html page
     test_html="/var/www/html/index.html"
-    echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
+    sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
     sudo certbot --nginx -d "$USER_DOMAINS"
