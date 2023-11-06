@@ -57,7 +57,7 @@ FUNC_PKG_CHECK(){
     echo -e "${GREEN}## CHECK NECESSARY PACKAGES HAVE BEEN INSTALLED...${NC}"
     echo     
 
-    sudo apt update -y && sudo apt upgrade -y
+    #sudo apt update -y && sudo apt upgrade -y
 
     for i in "${SYS_PACKAGES[@]}"
     do
@@ -185,7 +185,7 @@ networks:
     sudo docker-compose -f docker-compose.yml up -d
     echo ""
     echo "Starting Xinfin Node ..."
-    FUNC_EXIT
+    #FUNC_EXIT
 }
 
 
@@ -245,7 +245,7 @@ FUNC_NODE_DEPLOY(){
     echo -e "${GREEN}#########################################################################${NC}"
     sleep 3s
 
-
+    USER_DOMAINS=""
     VARVAL_NODE_NAME="xf_node_$(hostname -f)"
 
     if [ "$_OPTION" == "mainnet" ]; then
@@ -277,10 +277,10 @@ FUNC_NODE_DEPLOY(){
     FUNC_ENABLE_UFW;
 
     #Docker install
-    FUNC_DKR_INSTALL;
+    #FUNC_DKR_INSTALL;
 
     #XinFin Node setup
-    FUNC_CLONE_NODE_SETUP;
+    #FUNC_CLONE_NODE_SETUP;
 
 
 
@@ -289,29 +289,31 @@ FUNC_NODE_DEPLOY(){
     apt upgrade -y
 
     # Install Nginx
-    apt install nginx -y
+    sudo apt install nginx -y
 
     # Check if UFW (Uncomplicated Firewall) is installed
-    if dpkg -l | grep -q "ufw"; then
+    sudo if dpkg -l | grep -q "ufw"; then
         # If UFW is installed, allow Nginx through the firewall
-        ufw allow 'Nginx Full'
+        sudo ufw allow 'Nginx Full'
     else
         echo "UFW is not installed. Skipping firewall configuration."
     fi
 
     # Install Let's Encrypt Certbot
-    apt install certbot python3-certbot-nginx -y
+    sudo apt install certbot python3-certbot-nginx -y
 
-    # Prompt the user for the comma-separated domain list
-    read -p "Enter a comma-separated list of domains (e.g., domain1.com,domain2.com): " user_domains
+    # Prompt for user domains if not provided as a variable
+    #if [ -z "$USER_DOMAINS" ]; then
+    #    read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
+    #fi
 
-    # Extract the primary domain (the first entry in the list)
-    primary_domain=$(echo "$user_domains" | awk -F, '{print $1}')
-    echo "$primary_domain"
+    USER_DOMAINS="roci.inv4fee.xyz,apothem-rpc.inv4fee.xyz,apothem-ws.inv4fee.xyz"
+    echo "$USER_DOMAINS"
 
-    # Create an array of additional domains
-    IFS=',' read -ra additional_domains <<< "$user_domains"
-    echo "$additional_domains"
+    IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
+    A_RECORD="${DOMAINS_ARRAY[0]}"
+    CNAME_RECORD1="${DOMAINS_ARRAY[1]}"
+    CNAME_RECORD2="${DOMAINS_ARRAY[2]}" 
 
     # Start Nginx and enable it to start at boot
     systemctl start nginx
@@ -319,10 +321,10 @@ FUNC_NODE_DEPLOY(){
 
     # Create a test index.html page
     test_html="/var/www/html/index.html"
-    echo "<html><head><title>Welcome to $primary_domain</title></head><body><h1>Welcome to $primary_domain</h1></body></html>" > "$test_html"
+    echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
-    certbot --nginx -d "$user_domains"
+    certbot --nginx -d "$USER_DOMAINS"
 
     # Get the source IP of the current SSH session
     source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
@@ -333,17 +335,58 @@ FUNC_NODE_DEPLOY(){
     cat <<EOF > "$nginx_config"
 server {
     listen 80;
-    server_name $user_domain;
+    server_name $CNAME_RECORD1;
     return 301 https://\$host\$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name $user_domain www.$user_domain;
+    server_name $CNAME_RECORD1;
 
     # SSL certificate paths
-    ssl_certificate /etc/letsencrypt/live/$user_domain/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$user_domain/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/$A_RECORD/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$A_RECORD/privkey.pem;
+
+    # Other SSL settings
+    ssl_protocols TLSv1.3 TLSv1.2;
+    ssl_ciphers 'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES256-GCM-SHA384';
+    ssl_prefer_server_ciphers off;
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_tickets off;
+
+    # Additional SSL settings, including HSTS
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    location / {
+        allow $source_ip;  # Allow the source IP of the SSH session
+        deny all;
+        proxy_pass http://your_backend_server;
+        # Other proxy settings as needed
+    }
+    
+    # Serve the test index.html page
+    location = / {
+        root /var/www/html;
+    }
+
+    # Additional server configuration can go here
+}
+server {
+    listen 80;
+    server_name $CNAME_RECORD2;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name $CNAME_RECORD2;
+
+    # SSL certificate paths
+    ssl_certificate /etc/letsencrypt/live/$A_RECORD/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$A_RECORD/privkey.pem;
 
     # Other SSL settings
     ssl_protocols TLSv1.3 TLSv1.2;
@@ -379,7 +422,7 @@ EOF
 
     # Provide some basic instructions
     echo "Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $user_domain."
-    echo "You can access your secure web server by entering https://$user_domain in a web browser."
+    echo "You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser."
 
     FUNC_EXIT
 }
