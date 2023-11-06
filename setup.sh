@@ -331,7 +331,7 @@ FUNC_NODE_DEPLOY(){
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
-
+    sudo mv $nginx_config "$nginx_config.orig"
     sudo cat <<EOF > "$nginx_config"
 server {
     listen 80;
