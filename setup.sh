@@ -316,15 +316,15 @@ FUNC_NODE_DEPLOY(){
     CNAME_RECORD2="${DOMAINS_ARRAY[2]}" 
 
     # Start Nginx and enable it to start at boot
-    systemctl start nginx
-    systemctl enable nginx
+    sudo systemctl start nginx
+    sudo systemctl enable nginx
 
     # Create a test index.html page
     test_html="/var/www/html/index.html"
     echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
-    certbot --nginx -d "$USER_DOMAINS"
+    sudo certbot --nginx -d "$USER_DOMAINS"
 
     # Get the source IP of the current SSH session
     source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
@@ -332,7 +332,7 @@ FUNC_NODE_DEPLOY(){
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
 
-    cat <<EOF > "$nginx_config"
+    sudo cat <<EOF > "$nginx_config"
 server {
     listen 80;
     server_name $CNAME_RECORD1;
@@ -418,7 +418,7 @@ server {
 EOF
 
     # Reload Nginx to apply the new configuration
-    systemctl reload nginx
+    sudo systemctl reload nginx
 
     # Provide some basic instructions
     echo "Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $user_domain."
