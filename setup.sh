@@ -351,7 +351,8 @@ FUNC_NODE_DEPLOY(){
     sudo touch $nginx_config
     sudo chmod 664 $nginx_config 
     
-    cat <<EOF > $nginx_config
+    #cat <<EOF > $nginx_config
+    cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 80;
     server_name $CNAME_RECORD1;
