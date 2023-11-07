@@ -234,6 +234,48 @@ FUNC_ENABLE_UFW(){
 }
 
 
+
+FUNC_CERTBOT(){
+
+
+    # Install Let's Encrypt Certbot
+    sudo apt install certbot python3-certbot-nginx -y
+
+    # Prompt for user domains if not provided as a variable
+    #if [ -z "$USER_DOMAINS" ]; then
+    #    read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
+    #fi
+
+    USER_DOMAINS="roci.inv4fee.xyz,apothem-rpc.inv4fee.xyz,apothem-ws.inv4fee.xyz"
+    echo "$USER_DOMAINS"
+
+    IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
+    A_RECORD="${DOMAINS_ARRAY[0]}"
+    CNAME_RECORD1="${DOMAINS_ARRAY[1]}"
+    CNAME_RECORD2="${DOMAINS_ARRAY[2]}" 
+
+    # Start Nginx and enable it to start at boot
+    sudo systemctl start nginx
+    sudo systemctl enable nginx
+
+    # Create a test index.html page
+    test_html="/var/www/html/index.html"
+    if [ ! -e $test_html ]; then
+        sudo touch $test_html
+        sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
+    else
+        sudo mv $test_html "$test_html.orig"
+        sudo touch $test_html
+        sudo chmod 664 $test_html
+        sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
+    fi
+
+    # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
+    sudo certbot --nginx  -m "inv4fee2020@gmail.com" -n --agree-tos -d "$USER_DOMAINS"
+
+}
+
+
 FUNC_NODE_DEPLOY(){
     
     echo -e "${GREEN}#########################################################################${NC}"
@@ -273,7 +315,7 @@ FUNC_NODE_DEPLOY(){
     FUNC_PKG_CHECK;
 
     # Firewall config
-    FUNC_SETUP_UFW_PORTS
+    FUNC_SETUP_UFW_PORTS;
     FUNC_ENABLE_UFW;
 
     #Docker install
@@ -288,6 +330,8 @@ FUNC_NODE_DEPLOY(){
     #apt update
     #apt upgrade -y
 
+    #FUNC_CERTBOT;
+
     # Install Nginx
     sudo apt install nginx -y
 
@@ -298,48 +342,16 @@ FUNC_NODE_DEPLOY(){
     else
         echo "UFW is not installed. Skipping firewall configuration."
     fi
-
-    # Install Let's Encrypt Certbot
-    sudo apt install certbot python3-certbot-nginx -y
-
-    # Prompt for user domains if not provided as a variable
-    #if [ -z "$USER_DOMAINS" ]; then
-    #    read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
-    #fi
-
-    USER_DOMAINS="roci.inv4fee.xyz,apothem-rpc.inv4fee.xyz,apothem-ws.inv4fee.xyz"
-    echo "$USER_DOMAINS"
-
-    IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
-    A_RECORD="${DOMAINS_ARRAY[0]}"
-    CNAME_RECORD1="${DOMAINS_ARRAY[1]}"
-    CNAME_RECORD2="${DOMAINS_ARRAY[2]}" 
-
-    # Start Nginx and enable it to start at boot
-    sudo systemctl start nginx
-    sudo systemctl enable nginx
-
-    # Create a test index.html page
-    test_html="/var/www/html/index.html"
-    if [ ! -e $test_html ]; then
-        sudo touch $test_html
-        sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
-    else
-        sudo mv $test_html "$test_html.orig"
-        sudo touch $test_html
-        sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > "$test_html"
-    fi
-
-    # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
-    sudo certbot --nginx  -m "inv4fee2020@gmail.com" -n --agree-tos -d "$USER_DOMAINS"
-
     # Get the source IP of the current SSH session
     source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
     sudo mv $nginx_config "$nginx_config.orig"
-    sudo cat <<EOF > "$nginx_config"
+    sudo touch $nginx_config
+    sudo chmod 664 $nginx_config 
+    
+    cat <<EOF > $nginx_config
 server {
     listen 80;
     server_name $CNAME_RECORD1;
@@ -381,6 +393,7 @@ server {
 
     # Additional server configuration can go here
 }
+
 server {
     listen 80;
     server_name $CNAME_RECORD2;
