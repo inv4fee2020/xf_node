@@ -387,8 +387,8 @@ server {
         allow $source_ip;  # Allow the source IP of the SSH session
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_RPC;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
     }
 
     # Additional server configuration can go here
@@ -425,12 +425,12 @@ server {
         allow $source_ip;  # Allow the source IP of the SSH session
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_WSS;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr
 
         # These three are critical to getting websockets to work
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
     }
 
