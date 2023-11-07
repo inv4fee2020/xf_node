@@ -344,6 +344,7 @@ FUNC_NODE_DEPLOY(){
     fi
     # Get the source IP of the current SSH session
     source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
+    DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
@@ -383,7 +384,7 @@ server {
     location / {
         allow $source_ip;  # Allow the source IP of the SSH session
         deny all;
-        proxy_pass http://your_backend_server;
+        proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_RPC;
         # Other proxy settings as needed
     }
     
@@ -425,7 +426,7 @@ server {
     location / {
         allow $source_ip;  # Allow the source IP of the SSH session
         deny all;
-        proxy_pass http://your_backend_server;
+        proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_WSS;
         # Other proxy settings as needed
     }
     
