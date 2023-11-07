@@ -350,13 +350,12 @@ FUNC_NODE_DEPLOY(){
     DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
-    nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
+    nginx_config="/etc/nginx/sites-enabled/default"  # Modify this path if your Nginx config is in a different location
     sudo mv $nginx_config "$nginx_config.orig"
     sudo touch $nginx_config
     sudo chmod 646 $nginx_config 
     
     #cat <<EOF > $nginx_config
-    cat <<EOF > /etc/nginx/sites-available/default
 server {
     listen 80;
     server_name $CNAME_RECORD1;
