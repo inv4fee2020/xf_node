@@ -266,8 +266,9 @@ FUNC_CERTBOT(){
     else
         sudo mv $test_html "$test_html.orig"
         sudo touch $test_html
-        sudo chmod 664 $test_html
+        sudo chmod 666 $test_html
         sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
+        sudo chmod 644 $test_html
     fi
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
