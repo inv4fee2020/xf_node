@@ -349,7 +349,7 @@ FUNC_NODE_DEPLOY(){
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
     sudo mv $nginx_config "$nginx_config.orig"
     sudo touch $nginx_config
-    sudo chmod 664 $nginx_config 
+    sudo chmod 646 $nginx_config 
     
     #cat <<EOF > $nginx_config
     cat <<EOF > /etc/nginx/sites-available/default
@@ -437,7 +437,7 @@ server {
     # Additional server configuration can go here
 }
 EOF
-
+    sudo chmod 644 $nginx_config
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
 
