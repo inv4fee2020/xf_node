@@ -242,11 +242,11 @@ FUNC_CERTBOT(){
     sudo apt install certbot python3-certbot-nginx -y
 
     # Prompt for user domains if not provided as a variable
-    #if [ -z "$USER_DOMAINS" ]; then
-    #    read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
-    #fi
+    if [ -z "$USER_DOMAINS" ]; then
+        read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
+    fi
 
-    USER_DOMAINS="roci.inv4fee.xyz,apothem-rpc.inv4fee.xyz,apothem-ws.inv4fee.xyz"
+    #USER_DOMAINS="roci.inv4fee.xyz,apothem-rpc.inv4fee.xyz,apothem-ws.inv4fee.xyz"
     echo "$USER_DOMAINS"
 
     IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
@@ -288,6 +288,8 @@ FUNC_NODE_DEPLOY(){
     sleep 3s
 
     USER_DOMAINS=""
+    source ~/xf_node/xf_node.vars
+
     VARVAL_NODE_NAME="xf_node_$(hostname -f)"
 
     if [ "$_OPTION" == "mainnet" ]; then
@@ -319,18 +321,18 @@ FUNC_NODE_DEPLOY(){
     FUNC_ENABLE_UFW;
 
     #Docker install
-    #FUNC_DKR_INSTALL;
+    FUNC_DKR_INSTALL;
 
     #XinFin Node setup
-    #FUNC_CLONE_NODE_SETUP;
+    FUNC_CLONE_NODE_SETUP;
 
 
 
     # Update the package list and upgrade the system
-    #apt update
-    #apt upgrade -y
+    apt update
+    apt upgrade -y
 
-    #FUNC_CERTBOT;
+    FUNC_CERTBOT;
 
     # Install Nginx
     sudo apt install nginx -y
