@@ -23,32 +23,6 @@ FDATE=$(date +"%Y_%m_%d_%H_%M")
 
 source xf_node.vars
 
-#FUNC_VARS(){
-### VARIABLE / PARAMETER DEFINITIONS
-## ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#
-#
-#    XF_VARS_FILE="xf_node_$(hostname -f)".vars
-#    if [ ! -e ~/$XF_VARS_FILE ]; then
-#        #clear
-#        echo
-#        echo -e "${RED} #### NOTICE: No VARIABLES file found. ####${NC}"
-#        echo -e "${RED} ..creating local vars file '$HOME/$XF_VARS_FILE' ${NC}"
-#
-#        cp sample.vars ~/$XF_VARS_FILE
-#        chmod 600 ~/$XF_VARS_FILE
-#
-#        echo
-#        echo -e "${GREEN}nano '~/$XF_VARS_FILE' ${NC}"
-#        #sleep 2s
-#    fi
-#
-#    source ~/$XF_VARS_FILE
-#
-#
-#}
-
-
 
 FUNC_PKG_CHECK(){
 
@@ -113,15 +87,16 @@ FUNC_CLONE_NODE_SETUP(){
 
     echo "Clone Xinfin Node to HOME directory "
     cd ~/
-    directory="XinFin-Node"
+    NODE_DIR="XinFin-Node"
 
-    if [ ! -d "$directory" ]; then
-      echo "The directory '$directory' does not exist."
+    if [ ! -d "$NODE_DIR" ]; then
+      echo "The directory '$NODE_DIR' does not exist."
         git clone https://github.com/XinFinOrg/XinFin-Node
     else
-      echo "The directory '$directory' exists."
+      echo "The directory '$NODE_DIR' exists."
     fi
-    cd $directory/$VARVAL_CHAIN_NAME
+    
+    cd $NODE_DIR/$VARVAL_CHAIN_NAME
 
     ## update the .env file with the $VARVAL_NODE_NAME
     ## NODE_NAME=XF_MasterNode
@@ -291,22 +266,24 @@ FUNC_NODE_DEPLOY(){
     USER_DOMAINS=""
     source ~/xf_node/xf_node.vars
 
-    VARVAL_NODE_NAME="xf_node_$(hostname -f)"
+    VARVAL_NODE_NAME="xf_node_$(hostname -s)"
+    VARVAL_CHAIN_RPC=$NGX_RPC
+    VARVAL_CHAIN_WSS=$NGX_WSS
 
     if [ "$_OPTION" == "mainnet" ]; then
         echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$_OPTION
-        VARVAL_CHAIN_RPC=$NGX_MAINNET_RPC
-        VARVAL_CHAIN_WSS=$NGX_MAINNET_WSS
-        VARVAL_DKR_PORT=$DKR_MAINNET_PORT
+        #VARVAL_CHAIN_RPC=$NGX_MAINNET_RPC
+        #VARVAL_CHAIN_WSS=$NGX_MAINNET_WSS
+        #VARVAL_DKR_PORT=$DKR_MAINNET_PORT
 
     elif [ "$_OPTION" == "testnet" ]; then
         echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$_OPTION
-        VARVAL_CHAIN_RPC=$NGX_TESTNET_RPC
-        VARVAL_CHAIN_WSS=$NGX_TESTNET_WSS
+        #VARVAL_CHAIN_RPC=$NGX_TESTNET_RPC
+        #VARVAL_CHAIN_WSS=$NGX_TESTNET_WSS
         VARVAL_DKR_PORT=$DKR_TESTNET_PORT
     fi
 
@@ -337,13 +314,14 @@ FUNC_NODE_DEPLOY(){
 
 
     # Install Nginx - Check if NGINX  is installed
-    if dpkg -l | grep -q "nginx"; then
-        # If NGINX is already installed.. skipping
-        echo "NGINX is already installed.. skipping"
-        
-    else
-        echo "NGINX is not installed. installing now."
+    if ! dpkg -l | grep -q "nginx"; then
+        echo "NGINX is not installed. Installing now."
         sudo apt install nginx -y
+        FUNC_SETUP_UFW_PORTS;
+        FUNC_ENABLE_UFW;
+    else
+        # If NGINX is already installed.. skipping
+        echo "NGINX is already installed. Skipping"
     fi
 
 
@@ -397,7 +375,7 @@ server {
     location / {
         allow $source_ip;  # Allow the source IP of the SSH session
         deny all;
-        proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_RPC;
+        proxy_pass http://$DCKR_HOST_IP:$NGX_RPC;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
     }
@@ -428,7 +406,7 @@ server {
     location / {
         allow $source_ip;  # Allow the source IP of the SSH session
         deny all;
-        proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_WSS;
+        proxy_pass http://$DCKR_HOST_IP:$NGX_WSS;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
 
