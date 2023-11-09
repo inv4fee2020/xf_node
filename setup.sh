@@ -268,7 +268,7 @@ FUNC_NODE_DEPLOY(){
 
     # installs default packages listed in vars file
     FUNC_PKG_CHECK;
-    
+
 
     VARVAL_NODE_NAME="xf_node_$(hostname -s)"
     echo -e "${BYELLOW}  || Node name is : $VARVAL_NODE_NAME ||"
@@ -299,6 +299,7 @@ FUNC_NODE_DEPLOY(){
     nginx -v 
     if [ $? != 0 ]; then
         echo -e "${RED} ## NGINX is not installed. Installing now.${NC}"
+        apt update -y
         sudo apt install nginx -y
     else
         # If NGINX is already installed.. skipping
@@ -318,7 +319,7 @@ FUNC_NODE_DEPLOY(){
 
 
     # Update the package list and upgrade the system
-    #apt update
+    #apt update -y
     #apt upgrade -y
 
     FUNC_CERTBOT;
