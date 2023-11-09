@@ -350,12 +350,12 @@ FUNC_NODE_DEPLOY(){
     echo -e "${YELLOW}## Setup: Creating a new Nginx configuration file ...${NC}"
     echo
      
-    nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
-    sudo mv $nginx_config "$nginx_config.orig"
-    sudo touch $nginx_config
-    sudo chmod 666 $nginx_config 
+      # Modify this path if your Nginx config is in a different location
+    sudo mv $NGX_CONF "$NGX_CONF.orig"
+    sudo touch $NGX_CONF
+    sudo chmod 666 $NGX_CONF 
     
-    sudo cat <<EOF > $nginx_config
+    sudo cat <<EOF > $NGX_CONF
 server {
     listen 80;
     server_name $CNAME_RECORD1;$CNAME_RECORD2;
@@ -428,7 +428,7 @@ server {
     }
 }
 EOF
-    #sudo chmod 644 $nginx_config
+    sudo chmod 644 $NGX_CONF
 
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
