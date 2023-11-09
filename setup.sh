@@ -265,6 +265,11 @@ FUNC_NODE_DEPLOY(){
     #USER_DOMAINS=""
     #source ~/xf_node/xf_node.vars
 
+
+    # installs default packages listed in vars file
+    FUNC_PKG_CHECK;
+    
+
     VARVAL_NODE_NAME="xf_node_$(hostname -s)"
     echo -e "${BYELLOW}  || Node name is : $VARVAL_NODE_NAME ||"
     VARVAL_CHAIN_RPC=$NGX_RPC
@@ -290,38 +295,11 @@ FUNC_NODE_DEPLOY(){
     fi
 
 
-    # loads variables 
-    #FUNC_VARS;
-
-    # installs default packages listed in vars file
-    FUNC_PKG_CHECK;
-
-    # Firewall config
-    FUNC_SETUP_UFW_PORTS;
-    FUNC_ENABLE_UFW;
-
-    #Docker install
-    FUNC_DKR_INSTALL;
-
-    #XinFin Node setup
-    FUNC_CLONE_NODE_SETUP;
-
-
-
-    # Update the package list and upgrade the system
-    #apt update
-    #apt upgrade -y
-
-    FUNC_CERTBOT;
-
-
     # Install Nginx - Check if NGINX  is installed
     nginx -v 
     if [ $? != 0 ]; then
         echo -e "${RED} ## NGINX is not installed. Installing now.${NC}"
         sudo apt install nginx -y
-        FUNC_SETUP_UFW_PORTS;
-        FUNC_ENABLE_UFW;
     else
         # If NGINX is already installed.. skipping
         echo "NGINX is already installed. Skipping"
@@ -336,6 +314,24 @@ FUNC_NODE_DEPLOY(){
     else
         echo "UFW is not installed. Skipping firewall configuration."
     fi
+
+
+
+    # Update the package list and upgrade the system
+    #apt update
+    #apt upgrade -y
+
+    FUNC_CERTBOT;
+
+    # Firewall config
+    FUNC_SETUP_UFW_PORTS;
+    FUNC_ENABLE_UFW;
+
+    #Docker install
+    FUNC_DKR_INSTALL;
+
+    #XinFin Node setup
+    FUNC_CLONE_NODE_SETUP;
 
 
     # Get the source IP of the current SSH session
