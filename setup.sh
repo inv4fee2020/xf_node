@@ -154,12 +154,12 @@ networks:
     # Replace the original file with the temporary file
     mv "$input_file.tmp" "$input_file"
 
-    echo "Replacement complete, and a backup has been created as $backup_file."
+    echo -e "${YELLOW}Replacement complete, and a backup has been created as $backup_file.${NC}"
 
 
     sudo docker-compose -f docker-compose.yml up -d
-    echo ""
-    echo "Starting Xinfin Node ..."
+    echo 
+    echo -e "${YELLOW}Starting Xinfin Node ...${NC}"
     #FUNC_EXIT
 }
 
@@ -168,9 +168,9 @@ networks:
 FUNC_SETUP_UFW_PORTS(){
     echo 
     echo 
-    echo -e "${GREEN}#########################################################################${NC}" 
+    echo -e "${YELLOW}#########################################################################${NC}" 
     echo 
-    echo -e "${GREEN}## Base Setup: Configure Firewall...${NC}"
+    echo -e "${YELLOW}## Base Setup: Configure Firewall...${NC}"
     echo 
 
     # Get current SSH port number 
@@ -189,7 +189,7 @@ FUNC_ENABLE_UFW(){
     echo 
     echo -e "${GREEN}#########################################################################${NC}"
     echo 
-    echo -e "${GREEN}## Base Setup: Change UFW logging to ufw.log only${NC}"
+    echo -e "${YELLOW}## Base Setup: Change UFW logging to ufw.log only${NC}"
     echo 
     # source: https://handyman.dulare.com/ufw-block-messages-in-syslog-how-to-get-rid-of-them/
     sudo sed -i -e 's/\#& stop/\& stop/g' /etc/rsyslog.d/20-ufw.conf
@@ -199,7 +199,7 @@ FUNC_ENABLE_UFW(){
     echo 
     echo -e "${GREEN}#########################################################################${NC}" 
     echo 
-    echo -e "${GREEN}## Setup: Enable Firewall...${NC}"
+    echo -e "${YELLOW}## Setup: Enable Firewall...${NC}"
     echo 
     sudo systemctl start ufw && sudo systemctl status ufw
     sleep 2s
@@ -221,7 +221,7 @@ FUNC_CERTBOT(){
         read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
     fi
 
-    echo "$USER_DOMAINS"
+    echo -e "${YELLOW}$USER_DOMAINS${NC}"
 
     IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
     A_RECORD="${DOMAINS_ARRAY[0]}"
@@ -254,20 +254,23 @@ FUNC_CERTBOT(){
 FUNC_NODE_DEPLOY(){
     
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${YELLOW}#########################################################################${NC}"
     echo -e "${GREEN}${NC}"
     echo -e "${GREEN}             XinFin ${BYELLOW}$_OPTION${GREEN} RPC/WSS Node - Install${NC}"
     echo -e "${GREEN}${NC}"
-    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${YELLOW}#########################################################################${NC}"
     echo -e "${GREEN}#########################################################################${NC}"
     sleep 3s
 
-    USER_DOMAINS=""
-    source ~/xf_node/xf_node.vars
+    #USER_DOMAINS=""
+    #source ~/xf_node/xf_node.vars
 
     VARVAL_NODE_NAME="xf_node_$(hostname -s)"
+    echo -e "${BYELLOW}  || Node name is : $VARVAL_NODE_NAME ||"
     VARVAL_CHAIN_RPC=$NGX_RPC
+    echo -e "${BYELLOW}  || Node RPC port is : $VARVAL_CHAIN_RPC ||"
     VARVAL_CHAIN_WSS=$NGX_WSS
+    echo -e "${BYELLOW}  || Node WS port is : $VARVAL_CHAIN_WSS ||"
 
     if [ "$_OPTION" == "mainnet" ]; then
         echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
@@ -342,13 +345,13 @@ FUNC_NODE_DEPLOY(){
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Setup: Creating a new Nginx configuration file ...${NC}"
+    echo -e "${YELLOW}## Setup: Creating a new Nginx configuration file ...${NC}"
     echo
      
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
     sudo mv $nginx_config "$nginx_config.orig"
-    sudo touch $nginx_config
-    sudo chmod 646 $nginx_config 
+    #sudo touch $nginx_config
+    #sudo chmod 646 $nginx_config 
     
     sudo cat <<EOF > $nginx_config
 server {
@@ -423,7 +426,7 @@ server {
     }
 }
 EOF
-    sudo chmod 644 $nginx_config
+    #sudo chmod 644 $nginx_config
 
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
@@ -432,10 +435,10 @@ EOF
 
     echo
     echo -e "${GREEN}#########################################################################${NC}"
-    echo -e "${GREEN}## Setup: Created a new Nginx configuration file ...${NC}"
+    echo -e "${YELLOW}## Setup: Created a new Nginx configuration file ...${NC}"
     echo
-    echo -e "${GREEN}##  Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $user_domain.${NC}"
-    echo -e "${GREEN}##  You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser.${NC}"
+    echo -e "${YELLOW}##  Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $user_domain.${NC}"
+    echo -e "${YELLOW}##  You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser.${NC}"
 
     FUNC_EXIT
 }
