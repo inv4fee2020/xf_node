@@ -330,13 +330,19 @@ FUNC_NODE_DEPLOY(){
 
 
     # Update the package list and upgrade the system
-    apt update
-    apt upgrade -y
+    #apt update
+    #apt upgrade -y
 
-    FUNC_CERTBOT;
+    #FUNC_CERTBOT;
 
-    # Install Nginx
-    sudo apt install nginx -y
+    # Install Nginx - Check if NGINX  is installed
+    if dpkg -l | grep -q "nginx"; then
+        # If NGINX is already installed.. skipping
+        break
+    else
+        echo "NGINX is not installed. installing now."
+        sudo apt install nginx -y
+    fi
 
     # Check if UFW (Uncomplicated Firewall) is installed
     if dpkg -l | grep -q "ufw"; then
@@ -358,7 +364,7 @@ FUNC_NODE_DEPLOY(){
     cat <<EOF > $nginx_config
 server {
     listen 80;
-    server_name $CNAME_RECORD1;
+    server_name $CNAME_RECORD1;$CNAME_RECORD2;
     return 301 https://\$host\$request_uri;
 }
 
@@ -390,15 +396,8 @@ server {
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
     }
-
-    # Additional server configuration can go here
 }
 
-server {
-    listen 80;
-    server_name $CNAME_RECORD2;
-    return 301 https://\$host\$request_uri;
-}
 
 server {
     listen 443 ssl;
@@ -426,15 +425,13 @@ server {
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_TESTNET_WSS;
         proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr
+        proxy_set_header X-Real-IP \$remote_addr;
 
-        # These three are critical to getting websockets to work
+        # These three are critical to getting XDC node websockets to work
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
     }
-
-    # Additional server configuration can go here
 }
 EOF
     sudo chmod 644 $nginx_config
