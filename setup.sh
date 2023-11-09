@@ -429,7 +429,7 @@ server {
 }
 EOF
     sudo chmod 644 $NGX_CONF
-
+    sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
 
