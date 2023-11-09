@@ -338,12 +338,19 @@ FUNC_NODE_DEPLOY(){
     DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
+
+
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}## Setup: Creating a new Nginx configuration file ...${NC}"
+    echo
+     
     nginx_config="/etc/nginx/sites-available/default"  # Modify this path if your Nginx config is in a different location
     sudo mv $nginx_config "$nginx_config.orig"
     sudo touch $nginx_config
     sudo chmod 646 $nginx_config 
     
-    cat <<EOF > $nginx_config
+    sudo cat <<EOF > $nginx_config
 server {
     listen 80;
     server_name $CNAME_RECORD1;$CNAME_RECORD2;
@@ -422,8 +429,13 @@ EOF
     sudo systemctl reload nginx
 
     # Provide some basic instructions
-    echo "Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $user_domain."
-    echo "You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser."
+
+    echo
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}## Setup: Created a new Nginx configuration file ...${NC}"
+    echo
+    echo -e "${GREEN}##  Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $user_domain.${NC}"
+    echo -e "${GREEN}##  You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser.${NC}"
 
     FUNC_EXIT
 }
