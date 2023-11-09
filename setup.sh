@@ -316,8 +316,9 @@ FUNC_NODE_DEPLOY(){
 
 
     # Install Nginx - Check if NGINX  is installed
-    if ! dpkg -l | grep -q "nginx"; then
-        echo "NGINX is not installed. Installing now."
+    nginx -v 
+    if [ $? != 0 ]; then
+        echo -e "${RED} ## NGINX is not installed. Installing now.${NC}"
         sudo apt install nginx -y
         FUNC_SETUP_UFW_PORTS;
         FUNC_ENABLE_UFW;
@@ -328,7 +329,8 @@ FUNC_NODE_DEPLOY(){
 
 
     # Check if UFW (Uncomplicated Firewall) is installed
-    if dpkg -l | grep -q "ufw"; then
+    sudo ufw version
+    if [ $? = 0 ]; then
         # If UFW is installed, allow Nginx through the firewall
         sudo ufw allow 'Nginx Full'
     else
