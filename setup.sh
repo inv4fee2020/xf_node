@@ -93,7 +93,7 @@ FUNC_DKR_INSTALL(){
              $(lsb_release -cs) \
              stable"
 
-        sudo apt-get update
+        sudo apt-get update -y
 
         sudo apt-get install docker-ce -y
 
@@ -322,10 +322,10 @@ FUNC_NODE_DEPLOY(){
     FUNC_ENABLE_UFW;
 
     #Docker install
-    FUNC_DKR_INSTALL;
+    #FUNC_DKR_INSTALL;
 
     #XinFin Node setup
-    FUNC_CLONE_NODE_SETUP;
+    #FUNC_CLONE_NODE_SETUP;
 
 
 
@@ -333,16 +333,19 @@ FUNC_NODE_DEPLOY(){
     #apt update
     #apt upgrade -y
 
-    #FUNC_CERTBOT;
+    FUNC_CERTBOT;
+
 
     # Install Nginx - Check if NGINX  is installed
     if dpkg -l | grep -q "nginx"; then
         # If NGINX is already installed.. skipping
-        break
+        echo "NGINX is already installed.. skipping"
+        
     else
         echo "NGINX is not installed. installing now."
         sudo apt install nginx -y
     fi
+
 
     # Check if UFW (Uncomplicated Firewall) is installed
     if dpkg -l | grep -q "ufw"; then
@@ -351,6 +354,8 @@ FUNC_NODE_DEPLOY(){
     else
         echo "UFW is not installed. Skipping firewall configuration."
     fi
+
+
     # Get the source IP of the current SSH session
     source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
     DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet_xinfinnetwork_1)
