@@ -95,7 +95,7 @@ FUNC_CLONE_NODE_SETUP(){
     else
       echo "The directory '$NODE_DIR' exists."
     fi
-    
+
     cd $NODE_DIR/$VARVAL_CHAIN_NAME
 
     ## update the .env file with the $VARVAL_NODE_NAME
@@ -221,7 +221,6 @@ FUNC_CERTBOT(){
         read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
     fi
 
-    #USER_DOMAINS="roci.inv4fee.xyz,apothem-rpc.inv4fee.xyz,apothem-ws.inv4fee.xyz"
     echo "$USER_DOMAINS"
 
     IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
@@ -234,17 +233,17 @@ FUNC_CERTBOT(){
     sudo systemctl enable nginx
 
     # Create a test index.html page
-    test_html="/var/www/html/index.html"
-    if [ ! -e $test_html ]; then
-        sudo touch $test_html
-        sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
-    else
-        sudo mv $test_html "$test_html.orig"
-        sudo touch $test_html
-        sudo chmod 666 $test_html
-        sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
-        sudo chmod 644 $test_html
-    fi
+    #test_html="/var/www/html/index.html"
+    #if [ ! -e $test_html ]; then
+    #    sudo touch $test_html
+    #    sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
+    #else
+    #    sudo mv $test_html "$test_html.orig"
+    #    sudo touch $test_html
+    #    sudo chmod 666 $test_html
+    #    sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
+    #    sudo chmod 644 $test_html
+    #fi
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
     sudo certbot --nginx  -m "inv4fee2020@gmail.com" -n --agree-tos -d "$USER_DOMAINS"
@@ -299,10 +298,10 @@ FUNC_NODE_DEPLOY(){
     FUNC_ENABLE_UFW;
 
     #Docker install
-    #FUNC_DKR_INSTALL;
+    FUNC_DKR_INSTALL;
 
     #XinFin Node setup
-    #FUNC_CLONE_NODE_SETUP;
+    FUNC_CLONE_NODE_SETUP;
 
 
 
@@ -335,7 +334,7 @@ FUNC_NODE_DEPLOY(){
 
 
     # Get the source IP of the current SSH session
-    source_ip=$(echo $SSH_CONNECTION | awk '{print $1}')
+    SRC_IP=$(echo $SSH_CONNECTION | awk '{print $1}')
     DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
@@ -373,7 +372,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
 
     location / {
-        allow $source_ip;  # Allow the source IP of the SSH session
+        allow $SRC_IP;  # Allow the source IP of the SSH session
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_RPC;
         proxy_set_header Host \$host;
@@ -404,7 +403,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
 
     location / {
-        allow $source_ip;  # Allow the source IP of the SSH session
+        allow $SRC_IP;  # Allow the source IP of the SSH session
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_WSS;
         proxy_set_header Host \$host;
@@ -418,6 +417,7 @@ server {
 }
 EOF
     sudo chmod 644 $nginx_config
+
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
 
