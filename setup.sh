@@ -270,30 +270,31 @@ FUNC_NODE_DEPLOY(){
     FUNC_PKG_CHECK;
 
 
-    VARVAL_NODE_NAME="xf_node_$(hostname -s)"
-    echo -e "${BYELLOW}  || Node name is : $VARVAL_NODE_NAME ||"
-    VARVAL_CHAIN_RPC=$NGX_RPC
-    echo -e "${BYELLOW}  || Node RPC port is : $VARVAL_CHAIN_RPC ||"
-    VARVAL_CHAIN_WSS=$NGX_WSS
-    echo -e "${BYELLOW}  || Node WS port is : $VARVAL_CHAIN_WSS ||"
-
     if [ "$_OPTION" == "mainnet" ]; then
         echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$_OPTION
-        #VARVAL_CHAIN_RPC=$NGX_MAINNET_RPC
-        #VARVAL_CHAIN_WSS=$NGX_MAINNET_WSS
-        #VARVAL_DKR_PORT=$DKR_MAINNET_PORT
+        VARVAL_CHAIN_RPC=$NGX_MAINNET_RPC
+        VARVAL_CHAIN_WSS=$NGX_MAINNET_WSS
+        VARVAL_DKR_PORT=$DKR_MAINNET_PORT
 
     elif [ "$_OPTION" == "testnet" ]; then
         echo -e "${GREEN} ### Configuring node for ${BYELLOW}$_OPTION${GREEN}..  ###${NC}"
 
         VARVAL_CHAIN_NAME=$_OPTION
-        #VARVAL_CHAIN_RPC=$NGX_TESTNET_RPC
-        #VARVAL_CHAIN_WSS=$NGX_TESTNET_WSS
+        VARVAL_CHAIN_RPC=$NGX_TESTNET_RPC
+        VARVAL_CHAIN_WSS=$NGX_TESTNET_WSS
         VARVAL_DKR_PORT=$DKR_TESTNET_PORT
     fi
 
+
+    VARVAL_NODE_NAME="xf_node_$(hostname -s)"
+    echo -e "${BYELLOW}  || Node name is : $VARVAL_NODE_NAME ||"
+    VARVAL_CHAIN_RPC=$NGX_RPC
+    echo -e "${BYELLOW}  || Node RPC port is : $VARVAL_CHAIN_RPC ||"
+    VARVAL_CHAIN_WSS=$NGX_WSS
+    echo -e "${BYELLOW}  || Node WSS port is : $VARVAL_CHAIN_WSS  ||"
+    sleep 3s
 
     # Install Nginx - Check if NGINX  is installed
     nginx -v 
@@ -429,6 +430,7 @@ server {
 EOF
     sudo chmod 644 $NGX_CONF_NEW
     sudo ln -s $NGX_CONF_NEW /etc/nginx/sites-enabled/
+    sudo rm -f $NGX_CONF_OLD
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
 
