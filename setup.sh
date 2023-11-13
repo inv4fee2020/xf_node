@@ -134,10 +134,10 @@ networks:
     backup_file="docker-compose-$(date +'%Y%m%d%H%M%S').yml"
 
     # Copy the original file to the backup file
-    cp "$input_file" "$backup_file"
+    sudo cp "$input_file" "$backup_file"
 
     # Use awk to perform the replacement and maintain YAML formatting
-    awk -v search="$search_text" -v replace="$replace_text" '{
+    sudo awk -v search="$search_text" -v replace="$replace_text" '{
       if ($0 == search) {
         printf("%s\n", replace)
         found = 1
@@ -152,7 +152,7 @@ networks:
     }' "$input_file" > "$input_file.tmp"
 
     # Replace the original file with the temporary file
-    mv "$input_file.tmp" "$input_file"
+    sudo mv "$input_file.tmp" "$input_file"
 
     echo -e "${YELLOW}Replacement complete, and a backup has been created as $backup_file.${NC}"
 
