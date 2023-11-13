@@ -356,8 +356,8 @@ FUNC_NODE_DEPLOY(){
     sudo cat <<EOF > $NGX_CONF_NEW
 server {
     listen 80;
-    server_name $CNAME_RECORD1;$CNAME_RECORD2;
-    return 301 https://\$host\$request_uri;
+    server_name $A_RECORD $CNAME_RECORD1 $CNAME_RECORD2;
+    return 301 https://$server_name$request_uri;
 }
 
 server {
