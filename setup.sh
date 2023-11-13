@@ -293,7 +293,7 @@ FUNC_NODE_DEPLOY(){
     #VARVAL_CHAIN_RPC=$NGX_RPC
     echo -e "${BYELLOW}  || Node RPC port is : $VARVAL_CHAIN_RPC ||"
     #VARVAL_CHAIN_WSS=$NGX_WSS
-    echo -e "${BYELLOW}  || Node WSS port is : $VARVAL_CHAIN_WSS  ||"
+    echo -e "${BYELLOW}  || Node WSS port is : $VARVAL_CHAIN_WSS  ||${NC}"
     sleep 3s
 
     # Install Nginx - Check if NGINX  is installed
