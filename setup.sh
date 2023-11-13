@@ -338,7 +338,7 @@ FUNC_NODE_DEPLOY(){
 
     # Get the source IP of the current SSH session
     SRC_IP=$(echo $SSH_CONNECTION | awk '{print $1}')
-    DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' testnet_xinfinnetwork_1)
+    DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $VARVAL_CHAIN_NAME_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
 
