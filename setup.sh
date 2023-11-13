@@ -348,11 +348,11 @@ FUNC_NODE_DEPLOY(){
     echo
      
       # Modify this path if your Nginx config is in a different location
-    sudo mv $NGX_CONF "$NGX_CONF.orig"
-    sudo touch $NGX_CONF
-    sudo chmod 666 $NGX_CONF 
+    #sudo mv $NGX_CONF_OLD "$NGX_CONF_OLD.orig"
+    sudo touch $NGX_CONF_NEW
+    sudo chmod 666 $NGX_CONF_NEW 
     
-    sudo cat <<EOF > $NGX_CONF
+    sudo cat <<EOF > $NGX_CONF_NEW
 server {
     listen 80;
     server_name $CNAME_RECORD1;$CNAME_RECORD2;
@@ -381,6 +381,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
 
     location / {
+        try_files $uri $uri/ =404;
         allow $SRC_IP;  # Allow the source IP of the SSH session
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_RPC;
@@ -412,6 +413,7 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
 
     location / {
+        try_files $uri $uri/ =404;
         allow $SRC_IP;  # Allow the source IP of the SSH session
         deny all;
         proxy_pass http://$DCKR_HOST_IP:$NGX_WSS;
@@ -425,8 +427,8 @@ server {
     }
 }
 EOF
-    sudo chmod 644 $NGX_CONF
-    sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+    sudo chmod 644 $NGX_CONF_NEW
+    sudo ln -s $NGX_CONF_NEW /etc/nginx/sites-enabled/
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
 
