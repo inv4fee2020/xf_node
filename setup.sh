@@ -100,11 +100,11 @@ FUNC_CLONE_NODE_SETUP(){
 
     ## update the .env file with the $VARVAL_NODE_NAME
     ## NODE_NAME=XF_MasterNode
-    sed  -i.bak 's|^NODE_NAME.*|NODE_NAME='$VARVAL_NODE_NAME'|g' .env
+    sudo sed  -i.bak 's|^NODE_NAME.*|NODE_NAME='$VARVAL_NODE_NAME'|g' .env
 
     ## update the email address with random mail address
     ## CONTACT_DETAILS=YOUR_EMAIL_ADDRESS
-    sed  -i 's|^CONTACT_DETAILS.*|CONTACT_DETAILS=noreply@rpc.local|g' .env
+    sudo sed  -i 's|^CONTACT_DETAILS.*|CONTACT_DETAILS=noreply@rpc.local|g' .env
 
 
     ## update the yml file with network config to allow nginx to pass traffic
