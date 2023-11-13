@@ -263,7 +263,7 @@ FUNC_NODE_DEPLOY(){
     sleep 3s
 
     #USER_DOMAINS=""
-    #source ~/xf_node/xf_node.vars
+    source ~/xf_node/xf_node.vars
 
 
     # installs default packages listed in vars file
@@ -290,9 +290,9 @@ FUNC_NODE_DEPLOY(){
 
     VARVAL_NODE_NAME="xf_node_$(hostname -s)"
     echo -e "${BYELLOW}  || Node name is : $VARVAL_NODE_NAME ||"
-    VARVAL_CHAIN_RPC=$NGX_RPC
+    #VARVAL_CHAIN_RPC=$NGX_RPC
     echo -e "${BYELLOW}  || Node RPC port is : $VARVAL_CHAIN_RPC ||"
-    VARVAL_CHAIN_WSS=$NGX_WSS
+    #VARVAL_CHAIN_WSS=$NGX_WSS
     echo -e "${BYELLOW}  || Node WSS port is : $VARVAL_CHAIN_WSS  ||"
     sleep 3s
 
