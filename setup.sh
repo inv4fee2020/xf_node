@@ -98,9 +98,6 @@ FUNC_CLONE_NODE_SETUP(){
 
     cd $NODE_DIR/$VARVAL_CHAIN_NAME
 
-    ## update the .env file with the $VARVAL_NODE_NAME
-    ## NODE_NAME=XF_MasterNode
-    sudo sed  -i.bak 's|^NODE_NAME.*|NODE_NAME='$VARVAL_NODE_NAME'|g' .env
 
     ## update the email address with random mail address
     ## CONTACT_DETAILS=YOUR_EMAIL_ADDRESS
@@ -120,6 +117,11 @@ FUNC_CLONE_NODE_SETUP(){
 
 
     if [ "$_OPTION" == "testnet" ]; then
+
+
+    ## update the .env file 
+    ## NODE_NAME=XF_MasterNode
+    sudo sed  -i.bak 's|^NODE_NAME.*|NODE_NAME='$VARVAL_NODE_NAME'|g' .env
 
     # Define the search text
     search_text='    network_mode: "host"'
@@ -160,8 +162,13 @@ networks:
 
     elif [ "$_OPTION" == "mainnet" ]; then
 
+
+    ## update the .env file 
+    ## NODE_NAME=XF_MasterNode
+    sudo sed  -i.bak 's|^INSTANCE_NAME.*|INSTANCE_NAME='$VARVAL_NODE_NAME'|g' .env
+
     # Define the search text
-    search_text='    ports:'
+    search_text='ports:'
 
     # Define the replacement text with a variable for the port value
 
@@ -201,8 +208,10 @@ networks:
 
 
     sudo docker-compose -f docker-compose.yml up -d
+    sleep 3s
     echo 
     echo -e "${YELLOW}Starting Xinfin Node ...${NC}"
+    sleep 2s
     #FUNC_EXIT
 }
 
