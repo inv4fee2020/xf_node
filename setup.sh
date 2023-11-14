@@ -213,7 +213,7 @@ networks:
         if [ -n "$line_number" ]; then
             # Replace the content starting from the found line
             #sudo sed -i "${line_number}q; ${line_number}n; ${line_number}s|.*|$replacement_text|" "$input_file"
-            sudo sed -i "${line_number}s|.*|$replacement_text|" "$input_file"
+            sudo sed -i "${line_number}s|.*|$replacement_text|g" "$input_file"
             echo
             echo -e "${YELLOW}Replacement successful!${NC}"
             echo
