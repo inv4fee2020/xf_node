@@ -274,6 +274,12 @@ FUNC_CERTBOT(){
         read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
     fi
 
+
+    # Prompt for user email if not provided as a variable
+    if [ -z "$CERT_EMAIL" ]; then
+        read -p "Enter your email address for certbot updates: " CERT_EMAIL
+    fi
+
     echo -e "${YELLOW}$USER_DOMAINS${NC}"
 
     IFS=',' read -ra DOMAINS_ARRAY <<< "$USER_DOMAINS"
@@ -286,7 +292,7 @@ FUNC_CERTBOT(){
     sudo systemctl enable nginx
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
-    sudo certbot --nginx  -m "inv4fee2020@gmail.com" -n --agree-tos -d "$USER_DOMAINS"
+    sudo certbot --nginx  -m "$CERT_EMAIL" -n --agree-tos -d "$USER_DOMAINS"
 
 }
 
