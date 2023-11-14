@@ -42,6 +42,17 @@ To download the script(s) to you local node & install
         chmod +x *.sh
 
 
+
+### Vars file _'xf_node.vars'_
+
+The vars file allows you to manually update with your 'USER_DOMAINS' to avoid interactive prompts during the install.
+The file also controls some of the packages that are installed on the node. More features will be added in time.
+
+Simply clone down the repo and update the file using your preferred editor such as nano;
+
+        nano ~/xf_node/xf_node.vars
+
+
 ### Usage
 
         Usage: ./setup.sh {function}
@@ -53,15 +64,6 @@ To download the script(s) to you local node & install
 
               testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate
 
-
-### Vars file _'xf_node.vars'_
-
-The vars file allows you to manually update with your 'USER_DOMAINS' to avoid interactive prompts during the install.
-The file also controls some of the packages that are installed on the node.
-
-Simply clone down the repo and update the file using your preferred editor such as nano;
-
-        nano ~/xf_node/xf_node.vars
 
 ---
 
