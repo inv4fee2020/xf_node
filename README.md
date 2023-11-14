@@ -24,7 +24,8 @@ This script will take the standard XDC Docker node install and supplement it wit
   - Add cron job for lets-encrypt auto renewal
   - Add support for docker upgrades e.g. stashing customisations & re-applying
   - Add support for single domain with sub-folder for RPC & WSS
-  - Add support for multiple nginx permitted source addresses via the `xf_node.vars` file
+  - Add support for multiple nginx permitted IPv4 source addresses via the `xf_node.vars` file
+  - Add IPv6 support for source address permit lists
   - Improve error detection & handling within the script
   - Add backup features to save out customisations
   - Add backup of Staked Apothem node e.g. wallet keystore etc.
@@ -93,4 +94,4 @@ A special thanks & shout out to the following community members for their input 
 ---
 
 ### Feedback
-Please provide feedback on any issues encountered or indeed functionality by utilising the relevant Github issues & [xdc.dev]() comments section and I will endeavour to update/integrate where possible.
+Please provide feedback on any issues encountered or indeed functionality by utilising the relevant Github issues & [xdc.dev](https://www.xdc.dev/inv4fee2020/informative-scripted-linux-install-of-xdc-docker-node-with-nginx-lets-encrypt-4dlf) comments section and I will endeavour to update/integrate where possible.
