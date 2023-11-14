@@ -397,11 +397,11 @@ FUNC_NODE_DEPLOY(){
 server {
     listen 80;
     server_name $A_RECORD $CNAME_RECORD1 $CNAME_RECORD2;
-    return 301 https://$server_name$request_uri;
+    return 301 https://\$host\$request_uri;
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name $CNAME_RECORD1;
 
     # SSL certificate paths
@@ -428,12 +428,25 @@ server {
         proxy_pass http://172.19.0.2:$VARVAL_CHAIN_RPC;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
+
+    # Additional server configurations
+
+    # Set Content Security Policy (CSP) header
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline';";
+
+    # Enable XSS protection
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+
 }
 
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name $CNAME_RECORD2;
 
     # SSL certificate paths
@@ -460,12 +473,25 @@ server {
         proxy_pass http://172.19.0.2:$VARVAL_CHAIN_WSS;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
 
         # These three are critical to getting XDC node websockets to work
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
     }
+
+    # Additional server configurations
+
+    # Set Content Security Policy (CSP) header
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline';";
+
+    # Enable XSS protection
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+
 }
 EOF
     sudo chmod 644 $NGX_CONF_NEW
