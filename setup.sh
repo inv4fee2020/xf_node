@@ -188,7 +188,7 @@ networks:
     
         if $replace; then
             echo "$line"  # Output the line without any modification
-        elif [[ $line == "env_file: .env" ]]; then
+        elif [[ $line == $search_text ]]; then
             replace=true
             echo "$line"  # Output the line containing 'env_file: .env'
             echo "$replace_text"  # Append new content after the specified line
