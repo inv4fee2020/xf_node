@@ -168,44 +168,9 @@ networks:
     sudo sed  -i.bak 's|^INSTANCE_NAME.*|INSTANCE_NAME='$VARVAL_NODE_NAME'|g' .env
 
     # Define the search text
-#    search_text='ports:'
-#
-#    # Define the replacement text with a variable for the port value
-#
-#replace_text="\
-#    networks:
-#      mynetwork:
-#        ipv4_address: 172.19.0.2
-#    ports:
-#      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
-#networks:
-#  mynetwork:
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: \"172.19.0.0/24\""
-#
-#    
-#    # Set a flag to indicate whether replacement should occur
-#    replace=false
-#    
-#    # Read the file line by line
-#    while IFS= read -r line; do
-#        echo "$line"
-#    
-#        if $replace; then
-#            echo "$line"  # Output the line without any modification
-#        elif [[ $line == $search_text ]]; then
-#            replace=true
-#            echo "$line"  # Output the line containing 'env_file: .env'
-#            echo "$replace_text"  # Append new content after the specified line
-#        fi
-#    done < $input_file  
 
-    #search_text='    ports:'
-    search_text='    env_file: .env'
-    replacement_text='    networks:\n      mynetwork:\n        ipv4_address: 172.19.0.2\n    ports:\n      - "'$VARVAL_DKR_PORT:$VARVAL_DKR_PORT'"\nnetworks:\n  mynetwork:\n    ipam:\n      driver: default\n      config:\n        - subnet: "172.19.0.0/24"'
-    
+    search_text='    ports:'
+    #search_text='    env_file: .env'
     
     # Find the line number containing the search text
     line_number=$(sudo grep -n "$search_text" "$input_file" | cut -d ":" -f 1)
@@ -214,8 +179,20 @@ networks:
             # Replace the content starting from the found line
             #sudo sed -i "${line_number}q; ${line_number}n; ${line_number}s|.*|$replacement_text|" "$input_file"
             #sudo sed -i "${line_number}s|.*|$replacement_text|g" "$input_file"
-            sudo sed -i "${line_number},|$d" "$input_file"
-            echo -e "$replacement_text" >> "$input_file"
+            sudo sed -i "${line_number},\$d" "$input_file"sudo cat << EOF | sudo tee -a $input_file
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.2
+    ports:
+      - \"\$VARVAL_DKR_PORT:\$VARVAL_DKR_PORT\"
+networks:
+  mynetwork:
+    ipam:
+      driver: default
+      config:
+        - subnet: \"172.19.0.0/24\"
+EOF
+            #echo -e "$replacement_text" >> "$input_file"
             echo
             echo -e "${YELLOW}Replacement successful!${NC}"
             echo
@@ -306,19 +283,6 @@ FUNC_CERTBOT(){
     # Start Nginx and enable it to start at boot
     sudo systemctl start nginx
     sudo systemctl enable nginx
-
-    # Create a test index.html page
-    #test_html="/var/www/html/index.html"
-    #if [ ! -e $test_html ]; then
-    #    sudo touch $test_html
-    #    sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
-    #else
-    #    sudo mv $test_html "$test_html.orig"
-    #    sudo touch $test_html
-    #    sudo chmod 666 $test_html
-    #    sudo echo "<html><head><title>Welcome to $A_RECORD</title></head><body><h1>Welcome to $A_RECORD</h1></body></html>" > $test_html
-    #    sudo chmod 644 $test_html
-    #fi
 
     # Request and install a Let's Encrypt SSL/TLS certificate for Nginx
     sudo certbot --nginx  -m "inv4fee2020@gmail.com" -n --agree-tos -d "$USER_DOMAINS"
