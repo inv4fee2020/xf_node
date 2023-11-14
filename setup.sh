@@ -179,7 +179,8 @@ networks:
             # Replace the content starting from the found line
             #sudo sed -i "${line_number}q; ${line_number}n; ${line_number}s|.*|$replacement_text|" "$input_file"
             #sudo sed -i "${line_number}s|.*|$replacement_text|g" "$input_file"
-            sudo sed -i "${line_number},\$d" "$input_file"sudo cat << EOF | sudo tee -a $input_file
+            sudo sed -i "${line_number},\$d" "$input_file"
+            sudo cat << EOF | sudo tee -a $input_file
     networks:
       mynetwork:
         ipv4_address: 172.19.0.2
