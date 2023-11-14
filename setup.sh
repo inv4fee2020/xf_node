@@ -139,6 +139,25 @@ networks:
       config:
         - subnet: \"172.19.0.0/24\""
 
+    # Use awk to perform the replacement and maintain YAML formatting
+    sudo awk -v search="$search_text" -v replace="$replace_text" '{
+      if ($0 == search) {
+        printf("%s\n", replace)
+        found = 1
+      } else {
+        print
+      }
+    }END{
+      if (!found) {
+        print "Error: Search text not found in the input file." > "/dev/stderr"
+        exit 1
+      }
+    }' "$input_file" | sudo tee "$input_file.tmp" > /dev/null
+    #> "$input_file.tmp"
+
+    # Replace the original file with the temporary file
+    sudo mv "$input_file.tmp" "$input_file"
+
     elif [ "$_OPTION" == "mainnet" ]; then
 
     # Define the search text
@@ -158,29 +177,25 @@ networks:
       driver: default
       config:
         - subnet: \"172.19.0.0/24\""
+
+    
+    # Set a flag to indicate whether replacement should occur
+    replace=false
+    
+    # Read the file line by line
+    while IFS= read -r line; do
+        echo "$line"
+    
+        if $replace; then
+            echo "$line"  # Output the line without any modification
+        elif [[ $line == "env_file: .env" ]]; then
+            replace=true
+            echo "$line"  # Output the line containing 'env_file: .env'
+            echo "$replace_text"  # Append new content after the specified line
+        fi
+    done < $input_file  
+
     fi
-
-
-
-    # Use awk to perform the replacement and maintain YAML formatting
-    #sudo touch "$input_file.tmp"
-    sudo awk -v search="$search_text" -v replace="$replace_text" '{
-      if ($0 == search) {
-        printf("%s\n", replace)
-        found = 1
-      } else {
-        print
-      }
-    }END{
-      if (!found) {
-        print "Error: Search text not found in the input file." > "/dev/stderr"
-        exit 1
-      }
-    }' "$input_file" | sudo tee "$input_file.tmp" > /dev/null
-    #> "$input_file.tmp"
-
-    # Replace the original file with the temporary file
-    sudo mv "$input_file.tmp" "$input_file"
 
     echo -e "${YELLOW}Replacement complete, and a backup has been created as $backup_file.${NC}"
 
