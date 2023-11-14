@@ -161,7 +161,7 @@ networks:
     elif [ "$_OPTION" == "mainnet" ]; then
 
     # Define the search text
-    search_text='    env_file: .env'
+    search_text='    ports:'
 
     # Define the replacement text with a variable for the port value
 
