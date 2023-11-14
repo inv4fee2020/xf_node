@@ -55,14 +55,18 @@ Simply clone down the repo and update the file using your preferred editor such 
 
 ### Usage
 
-        Usage: ./setup.sh {function}
-            example:  ./setup.sh testnet
+The following example will install a `testnet` node
 
-        where {function} is one of the following;
+        ./setup.sh testnet
 
-              mainnet       ==  deploys the full Mainnet node with Nginx & LetsEncrypt TLS certificate
-
-              testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate
+>>>        Usage: ./setup.sh {function}
+>>>            example:  ./setup.sh testnet
+>>>
+>>>        where {function} is one of the following;
+>>>
+>>>              mainnet       ==  deploys the full Mainnet node with Nginx & LetsEncrypt TLS certificate
+>>>
+>>>              testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate
 
 
 ---
