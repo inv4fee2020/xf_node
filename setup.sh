@@ -391,17 +391,17 @@ FUNC_NODE_DEPLOY(){
     #apt update -y
     #apt upgrade -y
 
-    FUNC_CERTBOT;
-
-    # Firewall config
-    FUNC_SETUP_UFW_PORTS;
-    FUNC_ENABLE_UFW;
-
     #Docker install
     FUNC_DKR_INSTALL;
 
     #XinFin Node setup
     FUNC_CLONE_NODE_SETUP;
+
+    FUNC_CERTBOT;
+
+    # Firewall config
+    FUNC_SETUP_UFW_PORTS;
+    FUNC_ENABLE_UFW;
 
 
     # Get the source IP of the current SSH session
