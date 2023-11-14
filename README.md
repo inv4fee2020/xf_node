@@ -23,3 +23,11 @@ This script will take the standard XDC Docker node install and supplement it wit
   - Improve error detection & handling within the script
   - Add backup features to save out customisations
   - Add backup of Staked Apothem node e.g. wallet keystore etc.
+
+
+### contributers: 
+A special thanks & shout out to the following community members for their input & testing;
+- [@go140point6](https://github.com/go140point6)
+- [@s4njk4n](https://github.com/s4njk4n)
+- @samsam
+---
