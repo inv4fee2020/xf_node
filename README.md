@@ -65,9 +65,9 @@ The following example will install a `testnet` node
 >>>
 >>>        where {function} is one of the following;
 >>>
->>>              mainnet       ==  deploys the full Mainnet node with Nginx & LetsEncrypt TLS certificate
+>>>              mainnet       ==  deploys the full Mainnet node with Nginx & Let's Encrypt TLS certificate
 >>>
->>>              testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate
+>>>              testnet       ==  deploys the full Apothem node with Nginx & Let's Encrypt TLS certificate
 
 
 ---
