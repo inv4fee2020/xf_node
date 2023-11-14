@@ -208,7 +208,7 @@ networks:
     file_path='path/to/your/file.yaml'
     
     # Find the line number containing the search text
-    line_number=$(grep -n "$search_text" "$file_path" | cut -d ":" -f 1)
+    line_number=$(grep -n "$search_text" "$input_file" | cut -d ":" -f 1)
     
         if [ -n "$line_number" ]; then
             # Replace the content starting from the found line
