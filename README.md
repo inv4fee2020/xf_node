@@ -87,7 +87,7 @@ To apply repo updates to your local clone, be sure to stash any modifications yo
 
 ### contributers: 
 A special thanks & shout out to the following community members for their input & testing;
-- [@go140point6](https://github.com/go140point6)
+- [@realgo140point6](https://github.com/go140point6)
 - [@s4njk4n](https://github.com/s4njk4n)
 - @samsam
 
