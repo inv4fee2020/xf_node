@@ -185,13 +185,13 @@ networks:
       mynetwork:
         ipv4_address: 172.19.0.2
     ports:
-      - \"\$VARVAL_DKR_PORT:\$VARVAL_DKR_PORT\"
+      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
 networks:
   mynetwork:
     ipam:
       driver: default
       config:
-        - subnet: \"172.19.0.0/24\"
+        - subnet: "172.19.0.0/24"
 EOF
             #echo -e "$replacement_text" >> "$input_file"
             echo
