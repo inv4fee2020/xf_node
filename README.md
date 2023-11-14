@@ -8,7 +8,6 @@ This script will take the standard XDC Docker node install and supplement it wit
 **Note: If you have an existing node deployed using the standard Docker installation method from [XinFinOrg](https://github.com/XinFinOrg/XinFin-Node#method-2---setup-xinfin-masternode-bootstrap-script) then you must run the script under the same account which you originally installed your node.**
 
 
----
 
 ## Current functionality
  - Install options for Mainnet & Testnet
@@ -31,6 +30,18 @@ This script will take the standard XDC Docker node install and supplement it wit
 
 ---
 
+## How to download & use
+
+To download the script(s) to you local node & install 
+
+### Clone the repo
+
+        cd ~/
+        git clone https://github.com/inv4fee2020/xf_node.git
+        cd xf_node
+        chmod +x *.sh
+
+
 ### Usage
 
         Usage: ./setup.sh {function}
@@ -42,9 +53,19 @@ This script will take the standard XDC Docker node install and supplement it wit
 
               testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate
 
+
+### Vars file _'xf_node.vars'_
+
+The vars file allows you to manually update with your 'USER_DOMAINS' to avoid interactive prompts during the install.
+The file also controls some of the packages that are installed on the node.
+
+Simply clone down the repo and update the file using your preferred editor such as nano;
+
+        nano ~/xf_node/xf_node.vars
+
 ---
 
-# Manual updates
+## Manual updates
 
 To apply repo updates to your local clone, be sure to stash any modifications you may have made to the `xf_node.vars` file & take a manual backup also.
 
