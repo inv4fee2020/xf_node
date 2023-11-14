@@ -1,4 +1,4 @@
-# XinFinOrg XDC Node 
+# XinFinOrg XDC RPC Node 
 Xinfin XDC custom Docker node installation with nginx &amp; lets encrypt TLS certificate.
 
 ---
