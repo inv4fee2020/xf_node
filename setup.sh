@@ -202,10 +202,10 @@ networks:
 #        fi
 #    done < $input_file  
 
-    search_text='    ports:'
+    #search_text='    ports:'
+    search_text='    env_file: .env'
     replacement_text='    networks:\n      mynetwork:\n        ipv4_address: 172.19.0.2\n    ports:\n      - "'$VARVAL_DKR_PORT:$VARVAL_DKR_PORT'"\nnetworks:\n  mynetwork:\n    ipam:\n      driver: default\n      config:\n        - subnet: "172.19.0.0/24"'
     
-    file_path='path/to/your/file.yaml'
     
     # Find the line number containing the search text
     line_number=$(sudo grep -n "$search_text" "$input_file" | cut -d ":" -f 1)
@@ -213,7 +213,9 @@ networks:
         if [ -n "$line_number" ]; then
             # Replace the content starting from the found line
             #sudo sed -i "${line_number}q; ${line_number}n; ${line_number}s|.*|$replacement_text|" "$input_file"
-            sudo sed -i "${line_number}s|.*|$replacement_text|g" "$input_file"
+            #sudo sed -i "${line_number}s|.*|$replacement_text|g" "$input_file"
+            sudo sed -i "${line_number},|$d" "$input_file"
+            echo -e "$replacement_text" >> "$input_file"
             echo
             echo -e "${YELLOW}Replacement successful!${NC}"
             echo
