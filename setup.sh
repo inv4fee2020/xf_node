@@ -453,7 +453,7 @@ server {
         try_files $uri $uri/ =404;
         allow $SRC_IP;  # Allow the source IP of the SSH session
         deny all;
-        proxy_pass http://$DCKR_HOST_IP:$VARVAL_CHAIN_RPC;
+        proxy_pass http://172.19.0.2:$VARVAL_CHAIN_RPC;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
     }
@@ -485,7 +485,7 @@ server {
         try_files $uri $uri/ =404;
         allow $SRC_IP;  # Allow the source IP of the SSH session
         deny all;
-        proxy_pass http://$DCKR_HOST_IP:$VARVAL_CHAIN_WSS;
+        proxy_pass http://172.19.0.2:$VARVAL_CHAIN_WSS;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
 
