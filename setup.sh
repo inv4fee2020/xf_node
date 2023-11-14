@@ -109,6 +109,18 @@ FUNC_CLONE_NODE_SETUP(){
 
     ## update the yml file with network config to allow nginx to pass traffic
 
+    # Specify the input YAML file
+    input_file="docker-compose.yml"
+
+    # Create a backup of the original YAML file with a timestamp
+    backup_file="docker-compose-$(date +'%Y%m%d%H%M%S').yml"
+
+    # Copy the original file to the backup file
+    sudo cp "$input_file" "$backup_file"
+
+
+    if [ "$_OPTION" == "testnet" ]; then
+
     # Define the search text
     search_text='    network_mode: "host"'
 
@@ -127,14 +139,28 @@ networks:
       config:
         - subnet: \"172.19.0.0/24\""
 
-    # Specify the input YAML file
-    input_file="docker-compose.yml"
+    elif [ "$_OPTION" == "mainnet" ]; then
 
-    # Create a backup of the original YAML file with a timestamp
-    backup_file="docker-compose-$(date +'%Y%m%d%H%M%S').yml"
+    # Define the search text
+    search_text='    env_file: .env'
 
-    # Copy the original file to the backup file
-    sudo cp "$input_file" "$backup_file"
+    # Define the replacement text with a variable for the port value
+
+replace_text="\
+    networks:
+      mynetwork:
+        ipv4_address: 172.19.0.2
+    ports:
+      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
+networks:
+  mynetwork:
+    ipam:
+      driver: default
+      config:
+        - subnet: \"172.19.0.0/24\""
+    fi
+
+
 
     # Use awk to perform the replacement and maintain YAML formatting
     sudo awk -v search="$search_text" -v replace="$replace_text" '{
@@ -150,6 +176,7 @@ networks:
         exit 1
       }
     }' "$input_file" > "$input_file.tmp"
+
 
     # Replace the original file with the temporary file
     sudo mv "$input_file.tmp" "$input_file"
