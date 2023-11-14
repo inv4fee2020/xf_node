@@ -163,6 +163,7 @@ networks:
 
 
     # Use awk to perform the replacement and maintain YAML formatting
+    sudo touch "$input_file.tmp"
     sudo awk -v search="$search_text" -v replace="$replace_text" '{
       if ($0 == search) {
         printf("%s\n", replace)
