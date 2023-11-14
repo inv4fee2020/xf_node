@@ -32,7 +32,7 @@ This script will take the standard XDC Docker node install and supplement it wit
 
 ## How to download & use
 
-To download the script(s) to you local node & install 
+To download the script(s) to your local node & install, read over the following sections and when ready simply copy and paste the code snippets to your terminal window.
 
 ### Clone the repo
 
