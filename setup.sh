@@ -212,7 +212,8 @@ networks:
     
         if [ -n "$line_number" ]; then
             # Replace the content starting from the found line
-            sudo sed -i "${line_number}s|.*|$replacement_text|" "$input_file"
+            sudo sed -i "${line_number}q; ${line_number}n; ${line_number}s|.*@$replacement_text|" "$input_file"
+            #sudo sed -i "${line_number}s|.*|$replacement_text|" "$input_file"
             echo "Replacement successful!"
         else
             echo "Search text not found in the file."
