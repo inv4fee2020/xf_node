@@ -208,11 +208,11 @@ networks:
     file_path='path/to/your/file.yaml'
     
     # Find the line number containing the search text
-    line_number=$(grep -n "$search_text" "$input_file" | cut -d ":" -f 1)
+    line_number=$(sudo grep -n "$search_text" "$input_file" | cut -d ":" -f 1)
     
         if [ -n "$line_number" ]; then
             # Replace the content starting from the found line
-            sed -i "${line_number}s|.*|$replacement_text|" "$input_file"
+            sudo sed -i "${line_number}s|.*|$replacement_text|" "$input_file"
             echo "Replacement successful!"
         else
             echo "Search text not found in the file."
