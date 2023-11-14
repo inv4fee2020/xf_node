@@ -168,39 +168,55 @@ networks:
     sudo sed  -i.bak 's|^INSTANCE_NAME.*|INSTANCE_NAME='$VARVAL_NODE_NAME'|g' .env
 
     # Define the search text
-    search_text='ports:'
+#    search_text='ports:'
+#
+#    # Define the replacement text with a variable for the port value
+#
+#replace_text="\
+#    networks:
+#      mynetwork:
+#        ipv4_address: 172.19.0.2
+#    ports:
+#      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
+#networks:
+#  mynetwork:
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: \"172.19.0.0/24\""
+#
+#    
+#    # Set a flag to indicate whether replacement should occur
+#    replace=false
+#    
+#    # Read the file line by line
+#    while IFS= read -r line; do
+#        echo "$line"
+#    
+#        if $replace; then
+#            echo "$line"  # Output the line without any modification
+#        elif [[ $line == $search_text ]]; then
+#            replace=true
+#            echo "$line"  # Output the line containing 'env_file: .env'
+#            echo "$replace_text"  # Append new content after the specified line
+#        fi
+#    done < $input_file  
 
-    # Define the replacement text with a variable for the port value
-
-replace_text="\
-    networks:
-      mynetwork:
-        ipv4_address: 172.19.0.2
-    ports:
-      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
-networks:
-  mynetwork:
-    ipam:
-      driver: default
-      config:
-        - subnet: \"172.19.0.0/24\""
-
+    search_text='    env_file: .env'
+    replacement_text='    networks:\n      mynetwork:\n        ipv4_address: 172.19.0.2\n    ports:\n      - "$VARVAL_DKR_PORT:$VARVAL_DKR_PORT"\nnetworks:\n  mynetwork:\n    ipam:\n      driver: default\n      config:\n        - subnet: "172.19.0.0/24"'
     
-    # Set a flag to indicate whether replacement should occur
-    replace=false
+    file_path='path/to/your/file.yaml'
     
-    # Read the file line by line
-    while IFS= read -r line; do
-        echo "$line"
+    # Find the line number containing the search text
+    line_number=$(grep -n "$search_text" "$file_path" | cut -d ":" -f 1)
     
-        if $replace; then
-            echo "$line"  # Output the line without any modification
-        elif [[ $line == $search_text ]]; then
-            replace=true
-            echo "$line"  # Output the line containing 'env_file: .env'
-            echo "$replace_text"  # Append new content after the specified line
+        if [ -n "$line_number" ]; then
+            # Replace the content starting from the found line
+            sed -i "${line_number}s/.*/$replacement_text/" "$input_file"
+            echo "Replacement successful!"
+        else
+            echo "Search text not found in the file."
         fi
-    done < $input_file  
 
     fi
 
