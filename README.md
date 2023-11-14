@@ -29,10 +29,40 @@ This script will take the standard XDC Docker node install and supplement it wit
   - Add backup features to save out customisations
   - Add backup of Staked Apothem node e.g. wallet keystore etc.
 
+---
+
+### Usage
+
+        Usage: ./setup.sh {function}
+            example:  ./setup.sh testnet
+
+        where {function} is one of the following;
+
+              mainnet       ==  deploys the full Mainnet node with Nginx & LetsEncrypt TLS certificate
+
+              testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate
+
+---
+
+# Manual updates
+
+To apply repo updates to your local clone, be sure to stash any modifications you may have made to the `xf_node.vars` file & take a manual backup also.
+
+        cd ~/xf_node
+        git stash
+        cp xf_node.vars ~/xf_node_$(date +'%Y%m%d%H%M%S').vars
+        git pull
+        git stash apply
+
+---
 
 ### contributers: 
 A special thanks & shout out to the following community members for their input & testing;
 - [@go140point6](https://github.com/go140point6)
 - [@s4njk4n](https://github.com/s4njk4n)
 - @samsam
+
 ---
+
+### Feedback
+Please provide feedback on any issues encountered or indeed functionality by utilising the relevant Github issues & [xdc.dev]() comments section and I will endeavour to update/integrate where possible.
