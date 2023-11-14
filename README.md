@@ -16,6 +16,7 @@ This script will take the standard XDC Docker node install and supplement it wit
  - Applies NIST security best practices
  
  ## Planned functionality
+  - Add cron job for lets-encrypt auto renewal
   - Add support for docker upgrades e.g. stashing customisations & re-applying
   - Add support for single domain with sub-folder for RPC & WSS
   - Add support for multiple nginx permitted source addresses via the `xf_node.vars` file
