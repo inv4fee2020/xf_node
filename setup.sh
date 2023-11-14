@@ -203,7 +203,7 @@ networks:
 #    done < $input_file  
 
     search_text='    env_file: .env'
-    replacement_text='    networks:\n      mynetwork:\n        ipv4_address: 172.19.0.2\n    ports:\n      - "$VARVAL_DKR_PORT:$VARVAL_DKR_PORT"\nnetworks:\n  mynetwork:\n    ipam:\n      driver: default\n      config:\n        - subnet: "172.19.0.0/24"'
+    replacement_text='    networks:\n      mynetwork:\n        ipv4_address: 172.19.0.2\n    ports:\n      - "'$VARVAL_DKR_PORT:$VARVAL_DKR_PORT'"\nnetworks:\n  mynetwork:\n    ipam:\n      driver: default\n      config:\n        - subnet: "172.19.0.0/24"'
     
     file_path='path/to/your/file.yaml'
     
