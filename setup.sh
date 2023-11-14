@@ -297,6 +297,66 @@ FUNC_CERTBOT(){
 }
 
 
+
+
+FUNC_LOGROTATE(){
+    # add the logrotate conf file
+    # check logrotate status = cat /var/lib/logrotate/status
+
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}## ADDING LOGROTATE CONF FILE...${NC}"
+    sleep 2s
+
+    USER_ID=$(getent passwd $EUID | cut -d: -f1)
+
+    if [ "$USER_ID" == "root" ]; then
+        cat <<EOF > /tmp/tmpxinfin-logs
+/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/xdcchain/*.log
+        {
+            su $USER_ID $USER_ID
+            rotate 10
+            copytruncate
+            daily
+            missingok
+            notifempty
+            compress
+            delaycompress
+            sharedscripts
+            postrotate
+                    invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true
+            endscript
+        }    
+EOF
+    else
+        cat <<EOF > /tmp/tmpxinfin-logs
+/home/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/xdcchain/*.log
+        {
+            su $USER_ID $USER_ID
+            rotate 10
+            copytruncate
+            daily
+            missingok
+            notifempty
+            compress
+            delaycompress
+            sharedscripts
+            postrotate
+                    invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true
+            endscript
+        }    
+EOF
+    fi
+
+    sudo sh -c 'cat /tmp/tmpxinfin-logs > /etc/logrotate.d/xinfin-logs'
+
+}
+
+
+
+
+
+
+
 FUNC_NODE_DEPLOY(){
     
     echo -e "${GREEN}#########################################################################${NC}"
@@ -380,6 +440,9 @@ FUNC_NODE_DEPLOY(){
     # Firewall config
     FUNC_SETUP_UFW_PORTS;
     FUNC_ENABLE_UFW;
+
+    #Rotate logs on regular basis
+    FUNC_LOGROTATE;
 
 
     # Get the source IP of the current SSH session
@@ -514,6 +577,7 @@ EOF
     echo
     echo -e "${YELLOW}##  Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $A_RECORD.${NC}"
     echo -e "${YELLOW}##  You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser.${NC}"
+
 
     FUNC_EXIT
 }
