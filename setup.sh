@@ -185,7 +185,7 @@ networks:
       mynetwork:
         ipv4_address: 172.19.0.2
     ports:
-      - \"$VARVAL_DKR_PORT:$VARVAL_DKR_PORT\"
+      - "$VARVAL_DKR_PORT:$VARVAL_DKR_PORT"
 networks:
   mynetwork:
     ipam:
