@@ -236,9 +236,9 @@ EOF
         done
     fi
 
-    if [ VARVAL_CHAIN_NAME == "testnet" ]; then
+    if [ $VARVAL_CHAIN_NAME == "testnet" ]; then
         CHAIN_DIR="xdcchain-testnet"
-    elif [ VARVAL_CHAIN_NAME == "mainnet" ]; then
+    elif [ $VARVAL_CHAIN_NAME == "mainnet" ]; then
         CHAIN_DIR="xdcchain"
     fi
 
@@ -378,9 +378,9 @@ FUNC_LOGROTATE(){
 
 
     CHAIN_DIR=""
-    if [ VARVAL_CHAIN_NAME == "testnet" ]; then
+    if [ $VARVAL_CHAIN_NAME == "testnet" ]; then
         CHAIN_DIR="xdcchain-testnet"
-    elif [ VARVAL_CHAIN_NAME == "mainnet" ]; then
+    elif [ $VARVAL_CHAIN_NAME == "mainnet" ]; then
         CHAIN_DIR="xdcchain"
     fi
 
