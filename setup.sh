@@ -114,6 +114,7 @@ FUNC_CLONE_NODE_SETUP(){
 
     # Copy the original file to the backup file
     sudo cp "$input_file" "$backup_file"
+    sudo chown $USER_ID:$USER_ID $backup_file
 
 
     if [ "$_OPTION" == "testnet" ]; then
@@ -159,6 +160,7 @@ networks:
 
     # Replace the original file with the temporary file
     sudo mv "$input_file.tmp" "$input_file"
+    sudo chown $USER_ID:$USER_ID $input_file
 
     elif [ "$_OPTION" == "mainnet" ]; then
 
