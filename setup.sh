@@ -221,8 +221,13 @@ EOF
     elif [ VARVAL_CHAIN_NAME == "mainnet" ]; then
         CHAIN_DIR="xdcchain"
     fi
+    echo
+    echo -e "${YELLOW}Chain Directory is:  $CHAIN_DIR.${NC}"
+    echo -e "${YELLOW}Correcting chain directory permissions $CHAIN_DIR.${NC}"
+
     sudo chown -R $USER_ID:$USER_ID $CHAIN_DIR
-    sleep 1s
+    echo -e "${YELLOW}$(ls .)${NC}"
+    sleep 3s
 
     #sleep 3s
     echo 
