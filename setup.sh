@@ -216,16 +216,37 @@ EOF
 
 
     CHAIN_DIR=""
+
+    
+            # Prompt for Chain if not provided as a variable
+    if [ -z "$VARVAL_CHAIN_NAME" ]; then
+        while true; do
+         read -p "Chain name value missing.. please provide (e.g. mainnet or testnet): " _input
+            case $_input in
+                testnet )
+                    VARVAL_CHAIN_NAME="testnet"
+                    break
+                    ;;
+                mainnet )
+                    VARVAL_CHAIN_NAME="mainnet"
+                    break
+                    ;;
+                * ) echo "Please answer a valid option.";;
+            esac
+        done
+    fi
+
     if [ VARVAL_CHAIN_NAME == "testnet" ]; then
         CHAIN_DIR="xdcchain-testnet"
     elif [ VARVAL_CHAIN_NAME == "mainnet" ]; then
         CHAIN_DIR="xdcchain"
     fi
+    
     echo
     echo -e "${YELLOW}Chain Directory is:  $CHAIN_DIR.${NC}"
     echo -e "${YELLOW}Correcting chain directory permissions $CHAIN_DIR.${NC}"
 
-    sudo chown -R $USER_ID:$USER_ID $CHAIN_DIR
+    sudo chown $USER_ID:$USER_ID -R $CHAIN_DIR
     echo -e "${YELLOW}$(ls .)${NC}"
     sleep 3s
 
