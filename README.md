@@ -103,7 +103,7 @@ Move the cursor to the server blocks, similar to the following;
 	        deny all;
             proxy_pass http://172.19.0.2:8556;
 
-__ADD__ : Simply add a new line after the last allow (& above the deny all) being sure to enter a valid IPv4 address and end is a semi-colon '*_;_*'
+__ADD__ : Simply add a new line after the last allow (& above the deny all) being sure to enter a valid IPv4 address and end with a semi-colon '*_;_*'
 
 __REMOVE__ : Simple delete the entire line.
 
@@ -112,6 +112,45 @@ Save the file and exit the editor.
 For the changes to take effect, you will need to restart the nginx service as follows;
 
         sudo systemctl restart nginx
+
+
+
+### Testing your RPC/WSS endpoint
+
+The following are examples of tests that have been used successfully to validate correct operation;
+
+#### RPC
+
+Copy the following command and update with the your RPC domain that you entered at run time or in the vars file.
+
+        curl -H "Content-Type: application/json" --data "{\"jsonrpc\":\"2.0\",\"method\":\"net_version\",\"params\":[],\"id\":67}" https://rpc.mydomain.com/
+
+This should return an output similar to the following;
+>   {"jsonrpc":"2.0","id":67,"result":"51"}
+
+The 'net_version' result is the chain id for the node e.g. mainnet or testnet, depending on your chosen option.
+
+#### WSS
+
+Copy the following command and update with the your WSS domain that you entered at run time or in the vars file.
+
+        wscat -c wss://wss.mydomain.com
+
+This should open another session within your terminal, similar to the below;
+
+        Connected (press CTRL+C to quit)
+        >
+
+..where you can then enter the following test string;
+
+        {"jsonrpc":  "2.0", "id": 0, "method":  "eth_gasPrice"}
+
+This should then return a value similar to the following;
+
+        Connected (press CTRL+C to quit)
+        > {"jsonrpc":  "2.0", "id": 0, "method":  "eth_gasPrice"}
+        < {"jsonrpc":"2.0","id":0,"result":"0x2e90edd00"}
+        >
 
 
 ---
