@@ -12,6 +12,7 @@ This script will take the standard XDC Docker node install and supplement it wit
 ---
 
 - ##### [How to download the code & use](#how-to-download--use)
+  - ###### [Clone the repo](#clone-the-repo-1)
   - ###### [The vars file](#vars-file-xf_nodevars)
   - ###### [Script usage](#script-usage-1)
 - ##### [Nginx details](#nginx-related)
