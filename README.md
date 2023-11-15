@@ -47,8 +47,12 @@ To download the script(s) to your local node & install, read over the following 
 
 ### Vars file _'xf_node.vars'_
 
-The vars file allows you to manually update with your 'USER_DOMAINS' to avoid interactive prompts during the install.
-The file also controls some of the packages that are installed on the node. More features will be added in time.
+The vars file allows you to manually update the following variables which help to avoid interactive prompts during the install;
+
+- 'USER_DOMAINS' - note the order in which the A & CNAME records must be entered.
+- 'CERT_EMAIL' - email address for certificate renewals etc.
+
+The file also controls some of the packages that are installed on the node. More features will be added over time.
 
 Simply clone down the repo and update the file using your preferred editor such as nano;
 
@@ -67,8 +71,8 @@ The following example will install a `testnet` node
 >        where {function} is one of the following;
 >
 >              mainnet       ==  deploys the full Mainnet node with Nginx & Let's Encrypt TLS certificate
->
 >              testnet       ==  deploys the full Apothem node with Nginx & Let's Encrypt TLS certificate
+>              logrotate     ==  implements the logrotate config for chain log file(s)"
 
 
 ---
