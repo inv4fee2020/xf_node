@@ -139,19 +139,19 @@ Copy the following command and update with the your WSS domain that you entered 
 This should open another session within your terminal, similar to the below;
 
 >   Connected (press CTRL+C to quit)
->   >
+>   \>
 
 ..where you can then enter the following test string;
 
         {"jsonrpc":  "2.0", "id": 0, "method":  "eth_gasPrice"}
 
 This should then return a value similar to the following;
-
->   Connected (press CTRL+C to quit)
->   \> {"jsonrpc":  "2.0", "id": 0, "method":  "eth_gasPrice"}
->   \\< {"jsonrpc":"2.0","id":0,"result":"0x2e90edd00"}
->   \>
-
+``
+Connected (press CTRL+C to quit)
+> {"jsonrpc":  "2.0", "id": 0, "method":  "eth_gasPrice"}
+< {"jsonrpc":"2.0","id":0,"result":"0x2e90edd00"}
+>
+``
 
 ---
 
