@@ -11,20 +11,20 @@ This script will take the standard XDC Docker node install and supplement it wit
 # Table of Contents
 ---
 
-  - ### [How to download the code & use](#how-to-download-the-code--use)
-  - ### [The vars file](#vars-file-xf_nodevars)
-  - ### [Script usage](#script-usage-1)
+  - #### [How to download the code & use](#how-to-download--use)
+  - #### [The vars file](#vars-file-xf_nodevars)
+  - #### [Script usage](#script-usage-1)
 
-  - ### [Nginx details](#nginx-related)
-  - #### [Nginx - Allow Access - Scripts](#permitted-access---scripted)
-  - #### [Nginx - Allow Access - Manual](#permitted-access---manual)
+  - #### [Nginx details](#nginx-related)
+  - ##### [Nginx - Allow Access - Scripts](#permitted-access---scripted)
+  - ##### [Nginx - Allow Access - Manual](#permitted-access---manual)
 
-  - ### [Testing your Nginx endpoint(s)](#testing-your-rpcwss-endpoint)
-  - #### [Nginx - RPC endpoint(s)](#rpc)
-  - #### [Nginx - WSS endpoint(s)](#wss)
+  - #### [Testing your Nginx endpoint(s)](#testing-your-rpcwss-endpoint)
+  - ##### [Nginx - RPC endpoint(s)](#rpc)
+  - ##### [Nginx - WSS endpoint(s)](#wss)
 
-  - ### [Manual updates](#manual-updates-1)
-  - ### [Contributers](#contributers-1)
+  - #### [Manual updates](#manual-updates-1)
+  - #### [Contributers](#contributers-1)
 
 
 ---
