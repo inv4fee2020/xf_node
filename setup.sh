@@ -316,7 +316,6 @@ FUNC_LOGROTATE(){
         while true; do
          read -p "Enter which chain your node is deployed on (e.g. mainnet or testnet): " _input
 
-            fi
             case $_input in
                 testnet )
                     VARVAL_CHAIN_NAME="testnet"
