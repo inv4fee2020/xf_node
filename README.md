@@ -49,8 +49,8 @@ To download the script(s) to your local node & install, read over the following 
 
 The vars file allows you to manually update the following variables which help to avoid interactive prompts during the install;
 
-- 'USER_DOMAINS' - note the order in which the A & CNAME records must be entered.
-- 'CERT_EMAIL' - email address for certificate renewals etc.
+- `USER_DOMAINS` - note the order in which the A & CNAME records must be entered.
+- `CERT_EMAIL` - email address for certificate renewals etc.
 
 The file also controls some of the packages that are installed on the node. More features will be added over time.
 
@@ -73,6 +73,42 @@ The following example will install a `testnet` node
 >              mainnet       ==  deploys the full Mainnet node with Nginx & Let's Encrypt TLS certificate
 >              testnet       ==  deploys the full Apothem node with Nginx & Let's Encrypt TLS certificate
 >              logrotate     ==  implements the logrotate config for chain log file(s)"
+
+
+### Nginx related
+
+It is assumed that the node is being deployed to a dedicated host with no other nginx configuration. The node specfic config is contained in the `NGX_CONF_NEW` variable which is a file named `xinfin`.
+
+As part of the installation, the script adds the ssh session source IPv4 address as a permitted source for accessing reverse proxied services. Operators should update this as necessary with additional source IPv4 addresses as required.
+
+#### Permitted Access - scripted
+<tbc>
+
+
+#### Permitted Access - manual
+
+In order to add/remove source IPv4 addresses from the permit list within the nginx config, you simple access the file with your preferred editor e.g. vim or nano etc.  Each of the server blocks must be updated to reflect your desired access control policy.
+
+Open the file with the 'nano' editor;
+`sudo nano /etc/nginx/sites-available/xinfin`
+
+Move the cursor to the server blocks, similar to the following;
+
+        location / {
+            try_files  / =404;
+            allow 198.51.100.102;  # Allow the source IP of the SSH session
+            allow 198.51.100.171;  # Mgmt VPS station
+	        deny all;
+            proxy_pass http://172.19.0.2:8556;
+
+ADD : Simply add a new line after the last allow (& above the deny all) being sure to enter a valid IPv4 address and end is a semi-colon ';'
+
+REMOVE : Simple delete the entire line
+
+Save the file and exit the editor
+
+For the changes to take effect, you will need to restart the nginx service as follows;
+`sudo systemctl restart nginx`
 
 
 ---
