@@ -127,6 +127,7 @@ Copy the following command and update with the your RPC domain that you entered 
         curl -H "Content-Type: application/json" --data "{\"jsonrpc\":\"2.0\",\"method\":\"net_version\",\"params\":[],\"id\":67}" https://rpc.mydomain.com/
 
 This should return an output similar to the following;
+
     {"jsonrpc":"2.0","id":67,"result":"51"}
 
 The 'net_version' result is the chain id for the node e.g. mainnet or testnet, depending on your chosen option.
