@@ -309,11 +309,46 @@ FUNC_LOGROTATE(){
 
     USER_ID=$(getent passwd $EUID | cut -d: -f1)
 
+
+    # Prompt for Chain if not provided as a variable
+    if [ -z "$VARVAL_CHAIN_NAME" ]; then
+
+        while true; do
+         read -p "Enter which chain your node is deployed on (e.g. mainnet or testnet): " _input
+
+            fi
+            case $_input in
+                testnet )
+                    VARVAL_CHAIN_NAME="testnet"
+                    break
+                    ;;
+                mainnet )
+                    VARVAL_CHAIN_NAME="mainnet"
+                    break
+                    ;;
+                * ) echo "Please answer a valid option.";;
+            esac
+        done
+
+    fi
+
+    
+
+
+
+    CHAIN_DIR=""
+    if [ VARVAL_CHAIN_NAME == "testnet" ]; then
+        CHAIN_DIR="xdcchain-testnet"
+    elif [ VARVAL_CHAIN_NAME == "mainnet" ]; then
+        CHAIN_DIR="xdcchain"
+    fi
+
     if [ "$USER_ID" == "root" ]; then
         cat <<EOF > /tmp/tmpxinfin-logs
-/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/xdcchain/*.log
+/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
         {
             su $USER_ID $USER_ID
+            size 100M
             rotate 10
             copytruncate
             daily
@@ -329,9 +364,10 @@ FUNC_LOGROTATE(){
 EOF
     else
         cat <<EOF > /tmp/tmpxinfin-logs
-/home/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/xdcchain/*.log
+/home/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
         {
             su $USER_ID $USER_ID
+            size 100M
             rotate 10
             copytruncate
             daily
@@ -608,6 +644,9 @@ case "$1" in
                 _OPTION="testnet"
                 FUNC_NODE_DEPLOY
                 ;;
+        logrotate)
+                FUNC_LOGROTATE
+                ;;
         *)
                 
                 echo 
@@ -622,5 +661,7 @@ case "$1" in
                 echo "      mainnet       ==  deploys the full Mainnet node with Nginx & LetsEncrypt TLS certificate"
                 echo 
                 echo "      testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate"
+                echo 
+                echo "      logrotate     ==  implements the logrotate config for chain log file"
                 echo
 esac
