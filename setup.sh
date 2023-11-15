@@ -661,7 +661,10 @@ EOF
     echo
     echo -e "${YELLOW}##  Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $A_RECORD.${NC}"
     echo -e "${YELLOW}##  You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser.${NC}"
-
+    echo
+    echo
+    echo
+    echo
 
     FUNC_EXIT
 }
