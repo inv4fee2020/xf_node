@@ -82,7 +82,9 @@ It is assumed that the node is being deployed to a dedicated host with no other 
 As part of the installation, the script adds the ssh session source IPv4 address as a permitted source for accessing reverse proxied services. Operators should update this as necessary with additional source IPv4 addresses as required.
 
 #### Permitted Access - scripted
-<tbc>
+
+__tbc__
+
 
 
 #### Permitted Access - manual
