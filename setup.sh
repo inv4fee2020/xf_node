@@ -524,6 +524,7 @@ FUNC_NODE_DEPLOY(){
 
     # Get the source IP of the current SSH session
     SRC_IP=$(echo $SSH_CONNECTION | awk '{print $1}')
+    NODE_IP=$(curl -s ipinfo.io/ip)
     #DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $VARVAL_CHAIN_NAME_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
@@ -568,6 +569,7 @@ server {
     location / {
         try_files $uri $uri/ =404;
         allow $SRC_IP;  # Allow the source IP of the SSH session
+        allow $NODE_IP;  # Allow the source IP of the Node itself (for validation testing)
         deny all;
         proxy_pass http://172.19.0.2:$VARVAL_CHAIN_RPC;
         proxy_set_header Host \$host;
@@ -613,6 +615,7 @@ server {
     location / {
         try_files $uri $uri/ =404;
         allow $SRC_IP;  # Allow the source IP of the SSH session
+        allow $NODE_IP;  # Allow the source IP of the Node itself (for validation testing)
         deny all;
         proxy_pass http://172.19.0.2:$VARVAL_CHAIN_WSS;
         proxy_set_header Host \$host;
