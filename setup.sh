@@ -247,7 +247,7 @@ EOF
     echo -e "${YELLOW}Correcting chain directory permissions $CHAIN_DIR.${NC}"
 
     sudo chown $USER_ID:$USER_ID -R $CHAIN_DIR
-    echo -e "${YELLOW}$(ls .)${NC}"
+    #echo -e "${YELLOW}$(ls .)${NC}"
     sleep 3s
 
     #sleep 3s
@@ -524,7 +524,7 @@ FUNC_NODE_DEPLOY(){
 
     # Get the source IP of the current SSH session
     SRC_IP=$(echo $SSH_CONNECTION | awk '{print $1}')
-    DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $VARVAL_CHAIN_NAME_xinfinnetwork_1)
+    #DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $VARVAL_CHAIN_NAME_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
 
@@ -534,8 +534,6 @@ FUNC_NODE_DEPLOY(){
     echo -e "${YELLOW}## Setup: Creating a new Nginx configuration file ...${NC}"
     echo
      
-      # Modify this path if your Nginx config is in a different location
-    #sudo mv $NGX_CONF_OLD "$NGX_CONF_OLD.orig"
     sudo touch $NGX_CONF_NEW
     sudo chmod 666 $NGX_CONF_NEW 
     
