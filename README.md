@@ -61,14 +61,14 @@ The following example will install a `testnet` node
 
         ./setup.sh testnet
 
->>>        Usage: ./setup.sh {function}
->>>            example:  ./setup.sh testnet
->>>
->>>        where {function} is one of the following;
->>>
->>>              mainnet       ==  deploys the full Mainnet node with Nginx & Let's Encrypt TLS certificate
->>>
->>>              testnet       ==  deploys the full Apothem node with Nginx & Let's Encrypt TLS certificate
+>        Usage: ./setup.sh {function}
+>            example:  ./setup.sh testnet
+>
+>        where {function} is one of the following;
+>
+>              mainnet       ==  deploys the full Mainnet node with Nginx & Let's Encrypt TLS certificate
+>
+>              testnet       ==  deploys the full Apothem node with Nginx & Let's Encrypt TLS certificate
 
 
 ---

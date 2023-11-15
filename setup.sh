@@ -313,7 +313,7 @@ FUNC_CERTBOT(){
 
     # Prompt for user domains if not provided as a variable
     if [ -z "$USER_DOMAINS" ]; then
-        read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., domain1.com,domain2.com): " USER_DOMAINS
+        read -p "Enter a comma-separated list of domains, A record followed by CNAME records for RPC & WSS (e.g., server.mydomain.com,rpc.mydomain.com,wss.mydomain.com): " USER_DOMAINS
     fi
 
 
