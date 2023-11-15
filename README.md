@@ -101,14 +101,15 @@ Move the cursor to the server blocks, similar to the following;
 	        deny all;
             proxy_pass http://172.19.0.2:8556;
 
-ADD : Simply add a new line after the last allow (& above the deny all) being sure to enter a valid IPv4 address and end is a semi-colon ';'
+__ADD__ : Simply add a new line after the last allow (& above the deny all) being sure to enter a valid IPv4 address and end is a semi-colon '*_;_*'
 
-REMOVE : Simple delete the entire line
+__REMOVE__ : Simple delete the entire line.
 
-Save the file and exit the editor
+Save the file and exit the editor.
 
 For the changes to take effect, you will need to restart the nginx service as follows;
-`sudo systemctl restart nginx`
+
+        sudo systemctl restart nginx
 
 
 ---
