@@ -643,13 +643,13 @@ EOF
     sudo chmod 644 $NGX_CONF_NEW
 
     #check if symbolic link file exists in sites-enabled
-    if [ ! -f /etc/nginx/sites-enabled/$NGX_CONF_NEW ]; then
+    if [ ! -f /etc/nginx/sites-enabled/xinfin ]; then
         sudo ln -s $NGX_CONF_NEW /etc/nginx/sites-enabled/
     fi
     
     #delete default symbolic link file if it exists in sites-enabled
     if [  -f /etc/nginx/sites-enabled/default ]; then
-        sudo rm -f /etc/nginx/sites-enabled/default
+        sudo rm -f $NGX_CONF_OLD
     fi   
     
     # Reload Nginx to apply the new configuration
