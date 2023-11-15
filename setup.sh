@@ -114,6 +114,7 @@ FUNC_CLONE_NODE_SETUP(){
 
     # Copy the original file to the backup file
     sudo cp "$input_file" "$backup_file"
+    sudo chown $USER_ID:$USER_ID $backup_file
 
 
     if [ "$_OPTION" == "testnet" ]; then
@@ -159,6 +160,7 @@ networks:
 
     # Replace the original file with the temporary file
     sudo mv "$input_file.tmp" "$input_file"
+    sudo chown $USER_ID:$USER_ID $input_file
 
     elif [ "$_OPTION" == "mainnet" ]; then
 
@@ -208,10 +210,50 @@ EOF
     echo -e "${YELLOW}Replacement complete, and a backup has been created as $backup_file.${NC}"
 
 
-    sudo docker-compose -f docker-compose.yml up -d
+    #sudo docker-compose -f docker-compose.yml up -d
+    # Create base folder structure chain
+    sudo ./docker-up.sh && sudo ./docker-down.sh
+
+
+    CHAIN_DIR=""
+
+    
+            # Prompt for Chain if not provided as a variable
+    if [ -z "$VARVAL_CHAIN_NAME" ]; then
+        while true; do
+         read -p "Chain name value missing.. please provide (e.g. mainnet or testnet): " _input
+            case $_input in
+                testnet )
+                    VARVAL_CHAIN_NAME="testnet"
+                    break
+                    ;;
+                mainnet )
+                    VARVAL_CHAIN_NAME="mainnet"
+                    break
+                    ;;
+                * ) echo "Please answer a valid option.";;
+            esac
+        done
+    fi
+
+    if [ $VARVAL_CHAIN_NAME == "testnet" ]; then
+        CHAIN_DIR="xdcchain-testnet"
+    elif [ $VARVAL_CHAIN_NAME == "mainnet" ]; then
+        CHAIN_DIR="xdcchain"
+    fi
+
+    echo
+    echo -e "${YELLOW}Chain Directory is:  $CHAIN_DIR${NC}"
+    echo -e "${YELLOW}Correcting chain directory permissions $CHAIN_DIR.${NC}"
+
+    sudo chown $USER_ID:$USER_ID -R $CHAIN_DIR
+    #echo -e "${YELLOW}$(ls .)${NC}"
     sleep 3s
+
+    #sleep 3s
     echo 
     echo -e "${YELLOW}Starting Xinfin Node ...${NC}"
+    sudo ./docker-up.sh -f docker-compose.yml up -d
     sleep 2s
     #FUNC_EXIT
 }
@@ -295,6 +337,101 @@ FUNC_CERTBOT(){
     sudo certbot --nginx  -m "$CERT_EMAIL" -n --agree-tos -d "$USER_DOMAINS"
 
 }
+
+
+
+
+FUNC_LOGROTATE(){
+    # add the logrotate conf file
+    # check logrotate status = cat /var/lib/logrotate/status
+
+    echo -e "${GREEN}#########################################################################${NC}"
+    echo -e "${GREEN}## ADDING LOGROTATE CONF FILE...${NC}"
+    sleep 2s
+
+    USER_ID=$(getent passwd $EUID | cut -d: -f1)
+
+
+    # Prompt for Chain if not provided as a variable
+    if [ -z "$VARVAL_CHAIN_NAME" ]; then
+
+        while true; do
+         read -p "Enter which chain your node is deployed on (e.g. mainnet or testnet): " _input
+
+            case $_input in
+                testnet )
+                    VARVAL_CHAIN_NAME="testnet"
+                    break
+                    ;;
+                mainnet )
+                    VARVAL_CHAIN_NAME="mainnet"
+                    break
+                    ;;
+                * ) echo "Please answer a valid option.";;
+            esac
+        done
+
+    fi
+
+    
+
+
+
+    CHAIN_DIR=""
+    if [ $VARVAL_CHAIN_NAME == "testnet" ]; then
+        CHAIN_DIR="xdcchain-testnet"
+    elif [ $VARVAL_CHAIN_NAME == "mainnet" ]; then
+        CHAIN_DIR="xdcchain"
+    fi
+
+    if [ "$USER_ID" == "root" ]; then
+        cat <<EOF > /tmp/tmpxinfin-logs
+/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
+        {
+            su $USER_ID $USER_ID
+            size 100M
+            rotate 10
+            copytruncate
+            daily
+            missingok
+            notifempty
+            compress
+            delaycompress
+            sharedscripts
+            postrotate
+                    invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true
+            endscript
+        }    
+EOF
+    else
+        cat <<EOF > /tmp/tmpxinfin-logs
+/home/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
+        {
+            su $USER_ID $USER_ID
+            size 100M
+            rotate 10
+            copytruncate
+            daily
+            missingok
+            notifempty
+            compress
+            delaycompress
+            sharedscripts
+            postrotate
+                    invoke-rc.d rsyslog rotate >/dev/null 2>&1 || true
+            endscript
+        }    
+EOF
+    fi
+
+    sudo sh -c 'cat /tmp/tmpxinfin-logs > /etc/logrotate.d/xinfin-logs'
+
+}
+
+
+
+
+
 
 
 FUNC_NODE_DEPLOY(){
@@ -381,10 +518,13 @@ FUNC_NODE_DEPLOY(){
     FUNC_SETUP_UFW_PORTS;
     FUNC_ENABLE_UFW;
 
+    #Rotate logs on regular basis
+    FUNC_LOGROTATE;
+
 
     # Get the source IP of the current SSH session
     SRC_IP=$(echo $SSH_CONNECTION | awk '{print $1}')
-    DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $VARVAL_CHAIN_NAME_xinfinnetwork_1)
+    #DCKR_HOST_IP=$(sudo docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $VARVAL_CHAIN_NAME_xinfinnetwork_1)
 
     # Create a new Nginx configuration file with the user-provided domain and test HTML page
 
@@ -394,8 +534,6 @@ FUNC_NODE_DEPLOY(){
     echo -e "${YELLOW}## Setup: Creating a new Nginx configuration file ...${NC}"
     echo
      
-      # Modify this path if your Nginx config is in a different location
-    #sudo mv $NGX_CONF_OLD "$NGX_CONF_OLD.orig"
     sudo touch $NGX_CONF_NEW
     sudo chmod 666 $NGX_CONF_NEW 
     
@@ -501,8 +639,17 @@ server {
 }
 EOF
     sudo chmod 644 $NGX_CONF_NEW
-    sudo ln -s $NGX_CONF_NEW /etc/nginx/sites-enabled/
-    sudo rm -f $NGX_CONF_OLD
+
+    #check if symbolic link file exists in sites-enabled
+    if [ ! -f /etc/nginx/sites-enabled/xinfin ]; then
+        sudo ln -s $NGX_CONF_NEW /etc/nginx/sites-enabled/
+    fi
+    
+    #delete default symbolic link file if it exists in sites-enabled
+    if [  -f /etc/nginx/sites-enabled/default ]; then
+        sudo rm -f $NGX_CONF_OLD
+    fi   
+    
     # Reload Nginx to apply the new configuration
     sudo systemctl reload nginx
 
@@ -514,6 +661,10 @@ EOF
     echo
     echo -e "${YELLOW}##  Nginx is now installed and running with a Let's Encrypt SSL/TLS certificate for the domain $A_RECORD.${NC}"
     echo -e "${YELLOW}##  You can access your secure web server by entering https://$CNAME_RECORD1 of https://$CNAME_RECORD2 in a web browser.${NC}"
+    echo
+    echo
+    echo
+    echo
 
     FUNC_EXIT
 }
@@ -544,6 +695,9 @@ case "$1" in
                 _OPTION="testnet"
                 FUNC_NODE_DEPLOY
                 ;;
+        logrotate)
+                FUNC_LOGROTATE
+                ;;
         *)
                 
                 echo 
@@ -558,5 +712,7 @@ case "$1" in
                 echo "      mainnet       ==  deploys the full Mainnet node with Nginx & LetsEncrypt TLS certificate"
                 echo 
                 echo "      testnet       ==  deploys the full Apothem node with Nginx & LetsEncrypt TLS certificate"
+                echo 
+                echo "      logrotate     ==  implements the logrotate config for chain log file"
                 echo
 esac
