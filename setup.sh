@@ -210,10 +210,24 @@ EOF
     echo -e "${YELLOW}Replacement complete, and a backup has been created as $backup_file.${NC}"
 
 
-    sudo docker-compose -f docker-compose.yml up -d
-    sleep 3s
+    #sudo docker-compose -f docker-compose.yml up -d
+    # Create base folder structure chain
+    sudo ./docker-up.sh && sudo ./docker-down.sh
+
+
+    CHAIN_DIR=""
+    if [ VARVAL_CHAIN_NAME == "testnet" ]; then
+        CHAIN_DIR="xdcchain-testnet"
+    elif [ VARVAL_CHAIN_NAME == "mainnet" ]; then
+        CHAIN_DIR="xdcchain"
+    fi
+    sudo chown -R $USER_ID:$USER_ID $CHAIN_DIR
+    sleep 1s
+
+    #sleep 3s
     echo 
     echo -e "${YELLOW}Starting Xinfin Node ...${NC}"
+    sudo ./docker-up.sh -f docker-compose.yml up -d
     sleep 2s
     #FUNC_EXIT
 }
