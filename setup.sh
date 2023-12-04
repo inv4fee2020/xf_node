@@ -386,7 +386,7 @@ FUNC_LOGROTATE(){
 
     if [ "$USER_ID" == "root" ]; then
         cat <<EOF > /tmp/tmpxinfin-logs
-/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
+/$USER_ID/XinFin-Node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
         {
             su $USER_ID $USER_ID
             size 100M
@@ -405,7 +405,7 @@ FUNC_LOGROTATE(){
 EOF
     else
         cat <<EOF > /tmp/tmpxinfin-logs
-/home/$USER_ID/XinFin-node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
+/home/$USER_ID/XinFin-Node/$VARVAL_CHAIN_NAME/$CHAIN_DIR/*.log
         {
             su $USER_ID $USER_ID
             size 100M
